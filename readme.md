@@ -19,14 +19,14 @@ There will be no cap on the amount of karma, and more units will probably be add
 ## The units
 
 
-x | Cost | Payoff
--|-|-
+x          | Cost | Payoff
+-----------|------|-------
 Multiplier | 1.45 | 1.2
 
 ### Comments
 
 Comment name | Initial cost | Initial cooldown | Initial payoff
--|-|-|-
+-------------|--------------|------------------|---------------
 late to the party | 2 | 5 seconds | 1
 unpopular opinion | 5 | 20 seconds | 2
 niche subreddit, overlooked thread | 10 | 30 seconds | 4
@@ -59,7 +59,7 @@ top comment of all time |
 ### (Re)posts
 
 Post name | Initial cost | Initial cooldown | Initial payoff
--|-|-|-
+----------|--------------|------------------|---------------
 downvoted in /new/ |
 ok post to niche subreddit |
 self promotion |
