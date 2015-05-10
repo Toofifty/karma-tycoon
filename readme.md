@@ -19,7 +19,7 @@ There will be no cap on the amount of karma, and more units will probably be add
 ## The units
 
 
-x| Cost | Payoff
+x | Cost | Payoff
 -|-|-
 Multiplier | 1.45 | 1.2
 
