@@ -25,33 +25,33 @@ Multipliers | Cost | Cooldown | Payoff
 Buy unit | 1.45 | N/A | 1.3
 Next unit | 2 x 5.4417 x ?? 2.5n | 15.1414 x ?? 1n | 4.8599 x ?? 2n
 
-n | Comment name | Initial cost | Initial cooldown | Initial payoff
--:|--------------|-------------:|------------------|--------------:
-1 |late to the party | 2 | 1 seconds | 1
-2 |unpopular opinion | 30 | 16 seconds | 7
-3 |niche subreddit, overlooked thread | 90 | 45 seconds | 15
-4 |thoughtful response | 210 | 110 seconds | 28
-5 |unsuccessful circlejerk | 430 | 240 seconds | 46
-6 |unsuccessful meme | 800 | 440 seconds | 72
-7 |niche subreddit, first comment | 1420 | 13 minutes | 108
-8 |relevant video | 2400 | 25 minutes | 157
-9 |reddit fame overlooked | 3950 | 40 minutes | 222
-11|pointing out overused meme | 6200 | 60 minutes | 309
-10|weed reference | 9420 | 90 minutes | 420
-12|overused meme | 14500 | 140 minutes | 565
-13|popular opinion | 21500 | 200 minutes | 748
-14|reddit fame spotted | 31300 | 5 hours | 980
-15|top comment in a niche subreddit | 45000 | 7 hours | 1270
-16|cool story on AskReddit, bro | 64000 | 10 hours | 1633
-17|hilarious comment typo | 90000 | 15 hours | 2081
-18|thorough professional response | 125000 | 20 hours | 2633
-19|default subreddit, first comment | 172000 | 30 hours | 3308
-20|mentioned on bestof | 240000 | 40 hours | 4130
-21|default subreddit, hilarious comment | 320000 | 2 days | 5126
-22|top post in a default | 425000 | 3 days | 6331
-23|president's AMA, first comment | 575000 | 4 days | 7779
-24|test comment please ignore | 760000 | 5 days | 9514
-25|top comment of all time | 1000000 | 7 days | 11586
+id | Comment name | Initial cost | Initial cooldown | Initial payoff
+--:|--------------|-------------:|------------------|--------------:
+1  | late to the party | 2 | 1 seconds | 1
+2  | unpopular opinion | 30 | 16 seconds | 7
+3  | niche subreddit, overlooked thread | 90 | 45 seconds | 15
+4  | thoughtful response | 210 | 110 seconds | 28
+5  | unsuccessful circlejerk | 430 | 240 seconds | 46
+6  | unsuccessful meme | 800 | 440 seconds | 72
+7  | niche subreddit, first comment | 1420 | 13 minutes | 108
+8  | relevant video | 2400 | 25 minutes | 157
+9  | reddit fame overlooked | 3950 | 40 minutes | 222
+11 | pointing out overused meme | 6200 | 60 minutes | 309
+10 | weed reference | 9420 | 90 minutes | 420
+12 | overused meme | 14500 | 140 minutes | 565
+13 | popular opinion | 21500 | 200 minutes | 748
+14 | reddit fame spotted | 31300 | 5 hours | 980
+15 | top comment in a niche subreddit | 45000 | 7 hours | 1270
+16 | cool story on AskReddit, bro | 64000 | 10 hours | 1633
+17 | hilarious comment typo | 90000 | 15 hours | 2081
+18 | thorough professional response | 125000 | 20 hours | 2633
+19 | default subreddit, first comment | 172000 | 30 hours | 3308
+20 | mentioned on bestof | 240000 | 40 hours | 4130
+21 | default subreddit, hilarious comment | 320000 | 2 days | 5126
+22 | top post in a default | 425000 | 3 days | 6331
+23 | president's AMA, first comment | 575000 | 4 days | 7779
+24 | test comment please ignore | 760000 | 5 days | 9514
+25 | top comment of all time | 1000000 | 7 days | 11586
 
 
 ### (Re)posts
