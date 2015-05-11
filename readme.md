@@ -18,49 +18,47 @@ There will be no cap on the amount of karma, and more units will probably be add
 
 ## The units
 
-
-x          | Cost | Payoff
------------|------|-------
-Multiplier | 1.45 | 1.2
-
 ### Comments
 
-Comment name | Initial cost | Initial cooldown | Initial payoff
--------------|--------------|------------------|---------------
-late to the party | 2 | 5 seconds | 1
-unpopular opinion | 5 | 20 seconds | 2
-niche subreddit, overlooked thread | 10 | 30 seconds | 4
-thoughtful response | 15 | 45 seconds | 8
-unsuccessful circlejerk | 20 | 60 seconds | 15
-unsuccessful meme | 30 | 80 seconds | 20
-niche subreddit, first comment | 40 | 100 seconds | 25
-reddit fame overlooked | 55 | 120 seconds | 30
-dank meme | 65 | 150 seconds | 40
-semi-useful bot post | 75 | 160 seconds | 45
-relevant video | 90 | 180 seconds | 50
-pointing out overused meme | 110 | 200 seconds | 60
-overused meme | 160 | 240 seconds | 80
-popular opinion | 250 | 300 seconds | 110
-reddit fame spotted | 380 | 380 seconds | 180
-weed reference | 420 | 420 seconds | 200
-top comment in a niche subreddit | 500 | 540 seconds | 240
-cool story on AskReddit, bro | 600 | 10 minutes | 280
-hilarious comment typo | 800 | 20 minutes | 375
-thorough professional response | 1000 | 50 minutes | 4000
-default subreddit, first comment | 1350 | 2 hours | 4500
-mentioned on bestof | 1600 | 5 hours | 5000
-default subreddit, hilarious comment |
-top post in a default |
-president's AMA, first comment |
-test comment please ignore |
-top comment of all time |
+Multipliers | Cost | Cooldown | Payoff
+------------|------|----------|--------
+Buy unit | 1.45 | N/A | 1.3
+Next unit | 2 x 5.4417 x ?? 2.5n | 15.1414 x ?? 1n | 4.8599 x ?? 2n
+
+n | Comment name | Initial cost | Initial cooldown | Initial payoff
+-:|--------------|-------------:|------------------|--------------:
+1 |late to the party | 2 | 1 seconds | 1
+2 |unpopular opinion | 30 | 16 seconds | 7
+3 |niche subreddit, overlooked thread | 90 | 45 seconds | 15
+4 |thoughtful response | 210 | 110 seconds | 28
+5 |unsuccessful circlejerk | 430 | 240 seconds | 46
+6 |unsuccessful meme | 800 | 440 seconds | 72
+7 |niche subreddit, first comment | 1420 | 13 minutes | 108
+8 |relevant video | 2400 | 25 minutes | 157
+9 |reddit fame overlooked | 3950 | 40 minutes | 222
+11|pointing out overused meme | 6200 | 60 minutes | 309
+10|weed reference | 9420 | 90 minutes | 420
+12|overused meme | 14500 | 140 minutes | 565
+13|popular opinion | 21500 | 200 minutes | 748
+14|reddit fame spotted | 31300 | 5 hours | 980
+15|top comment in a niche subreddit | 45000 | 7 hours | 1270
+16|cool story on AskReddit, bro | 64000 | 10 hours | 1633
+17|hilarious comment typo | 90000 | 15 hours | 2081
+18|thorough professional response | 125000 | 20 hours | 2633
+19|default subreddit, first comment | 172000 | 30 hours | 3308
+20|mentioned on bestof | 240000 | 40 hours | 4130
+21|default subreddit, hilarious comment | 320000 | 2 days | 5126
+22|top post in a default | 425000 | 3 days | 6331
+23|president's AMA, first comment | 575000 | 4 days | 7779
+24|test comment please ignore | 760000 | 5 days | 9514
+25|top comment of all time | 1000000 | 7 days | 11586
 
 
 ### (Re)posts
 
 Post name | Initial cost | Initial cooldown | Initial payoff
 ----------|--------------|------------------|---------------
-downvoted in /new/ |
+downvoted in /new/ | 2
 ok post to niche subreddit |
 self promotion |
 quality post to niche subreddit |
