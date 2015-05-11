@@ -24,15 +24,19 @@ class User:
         self.comment_karma = self.data["comment_karma"]
         self.purchases = self.data["purchases"]
         
-    def attr_to_json(self):
-        data = {}
+    def json(self):
+        """Convert volatile attributes to json
+        
+        return json bateman
+        """
+        bateman = {}
         for key in self.data:
-            data[key] = getattr(self, key)
-        return data
+            bateman[key] = getattr(self, key)
+        return bateman
         
     def save_data(self):
         with open(USER_PATH + self.username, 'w') as f:
-            json.dump(attr_to_json(), f)
+            json.dump(json(), f)
     
     def add_purchase(self, id, quantity):
         try:
