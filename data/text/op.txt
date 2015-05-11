@@ -1,0 +1,62 @@
+# Welcome to the Karma Tycoon OP! 
+This thread should only be used for KT commands, non-command comments will be removed.
+
+Don't know how to play? Check out the [wiki](http://www.reddit.com/r/karmatycoon/wiki/index).
+
+*****
+
+## **{link_karma}** link karma
+## **{comment_karma}** comment karma
+## **{gold}x** reddit gold
+
+*Last update: {last_op_update}*
+
+*****
+
+### Top Tycoons
+|          | Most link karma | Most comment karma | Most gold |
+|----------|:---------------:|:------------------:|:---------:|
+|*All time*|  {top_link_all} |  {top_comment_all} |{top_g_all}|
+|*Last 24h*|  {top_link_24h} |  {top_comment_24h} |{top_g_24h}|
+
+*Last update: {last_hs_update}*
+
+*****
+
+# Links
+
+{link_units}
+
+# Comments
+
+{comment_units}
+
+# Gold upgrades
+
+*Coming soon!*
+
+*****
+
+# Recent posts
+
+## Links
+
+{post_links_recent}
+
+## Comments
+
+{post_comments_recent}
+
+# Recent purchases
+
+## Links
+
+{purchase_links_recent}
+
+## Comments
+
+{purchase_comments_recent}
+
+*****
+
+[wiki](http://www.reddit.com/r/karmatycoon/wiki/index) | [highscores](http://www.reddit.com/r/karmatycoon/wiki/highscores) | [message](http://www.reddit.com/message/compose?to=/r/karmatycoon&subject=&message=i%20love%20you) | [issues / suggestions](https://github.com/Toofifty/karma-tycoon/issues)

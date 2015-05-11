@@ -1,0 +1,3 @@
+|`{short_name}`{name}|{cost}|{cooldown}
+|:--|:-:|:-:|
+|{amount}|{pay}|{time}|

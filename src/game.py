@@ -12,6 +12,7 @@ import unit
 
 UNIT_PATH = "../data/units"
 SAVE_PATH = "../data/game"
+EXT = ".kt"
 
 class Game:
     """Game object
@@ -32,7 +33,7 @@ class Game:
             "runtime" int
         """
         
-        with open(SAVE_PATH, 'r') as f:
+        with open(SAVE_PATH + EXT, 'r') as f:
             self.data = json.load(f)
             
         self.gold = self.data["gold"]
@@ -53,7 +54,7 @@ class Game:
         self.link_units = []
         self.comment_units = []
         
-        with open(UNIT_PATH, 'r') as f:
+        with open(UNIT_PATH + EXT, 'r') as f:
             data = json.load(f)
             
         for id in data["comment"]:
@@ -62,6 +63,10 @@ class Game:
         #for id, attrs in data["link"]:
         #    self.comment_units[int(id)] = unit.from_dict(id, attrs)
         
+    def get_gold(self):
+        """return gold points"""
+        
+        return self.gold
         
     def get_link_karma(self):
         """return link karma points"""
@@ -92,6 +97,12 @@ class Game:
         
         return self.get_lifetime_link() + self.get_lifetime_karma()
         
+    def add_gold(self, user, karma):
+        """Randomly awards gold, dependent on karma gained"""
+    
+        if random.randint(0, 1000000) < karma:
+            self.gold += 1
+            user.add_gold()
         
     def add_link_karma(self, user, karma):
         """Add link karma to tally and user's tally"""
@@ -99,6 +110,7 @@ class Game:
         self.link_karma += karma
         self.lifetime_link += karma
         user.add_link_karma(karma)
+        self.add_gold(karma)
         print "lk: %d" % self.link_karma
         
     def add_comment_karma(self, user, karma):
@@ -107,6 +119,7 @@ class Game:
         self.comment_karma += karma
         self.lifetime_comment += karma
         user.add_comment_karma(karma)
+        self.add_gold(karma)
         print "ck: %d" % self.comment_karma
         
     def get_unit(self, type, unit_name):
@@ -225,5 +238,5 @@ class Game:
         return true if successful
         """
         
-        with open(SAVE_PATH, 'w') as f:
+        with open(SAVE_PATH + EXT, 'w') as f:
             json.dump(self.json(), f)

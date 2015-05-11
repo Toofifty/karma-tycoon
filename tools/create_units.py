@@ -1,6 +1,6 @@
 import json, os
 
-PATH = "../data/units"
+PATH = "../data/units.kt"
 
 def main():    
     with open(PATH, 'r') as f:
@@ -15,13 +15,12 @@ def main():
     init_cost = int(raw_input("init_cost: "))
     init_profit = int(raw_input("init_profit: "))
     init_time = int(raw_input("init_time (s): "))
-    amount = int(raw_input("amount: "))
     print "unit created"
     
     data[type][id] = {"name":name, 
             "short_name":short_name, "init_cost":init_cost,
             "init_profit":init_profit, "init_time":init_time,
-            "amount":amount}
+            "amount":0}
      
     with open(PATH, 'w') as f:
         json.dump(data, f, sort_keys=True,
