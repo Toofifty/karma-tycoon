@@ -1,15 +1,15 @@
 #!/user/bin/env pthon
 """
 Karma Tycoon Bot
-Highscores class
-highscores.py
+Stats class
+stats.py
 
 http://karma.matho.me/
 """
 
 HS_PATH = "../data/hs"
 
-class Highscores:
+class Stats:
     """Highscores class
     
     Crawls over user files and finds the

@@ -58,11 +58,14 @@ class Game:
         with open(UNIT_PATH + EXT, 'r') as f:
             data = json.load(f)
             
-        for id in data["comment"]:
-            i = int(id) - 1
-            self.comment_units.append(unit.from_dict(i, data["comment"][id]))
+        i = 0
+        for d in data["comment"]:
+            print i, d
+            self.comment_units.insert(i, unit.from_dict(i, d))
+            i += 1
         #for id, attrs in data["link"]:
         #    self.comment_units[int(id)] = unit.from_dict(id, attrs)
+        
         
     def get_gold(self):
         """return gold points"""
@@ -98,12 +101,16 @@ class Game:
         
         return self.get_lifetime_link() + self.get_lifetime_karma()
         
-    def add_gold(self, user, karma):
+        
+    def random_gold(self, user, karma):
         """Randomly awards gold, dependent on karma gained"""
     
         if random.randint(0, 1000000) < karma:
             self.gold += 1
             user.add_gold()
+            return True
+        return False
+        
         
     def add_link_karma(self, user, karma):
         """Add link karma to tally and user's tally"""
@@ -111,8 +118,8 @@ class Game:
         self.link_karma += karma
         self.lifetime_link += karma
         user.add_link_karma(karma)
-        self.add_gold(karma)
-        print "lk: %d" % self.link_karma
+        return True
+        
         
     def add_comment_karma(self, user, karma):
         """Add comment karma to tally and user's tally"""
@@ -120,8 +127,8 @@ class Game:
         self.comment_karma += karma
         self.lifetime_comment += karma
         user.add_comment_karma(karma)
-        self.add_gold(user, karma)
-        print "ck: %d" % self.comment_karma
+        return True
+        
         
     def get_unit(self, type, unit_name):
         """Get unit from name and type
@@ -144,7 +151,7 @@ class Game:
         return None
         
         
-    def buy_unit(self, reddit, type, user, unit_name, quantity=1):
+    def buy_unit(self, history, type, user, unit_name, quantity=1):
         """Buy _quantity_ units in _type_ 
         
         return true if unit.buy(), false if unit not found
@@ -152,14 +159,12 @@ class Game:
         
         unit = self.get_unit(type, unit_name)
         if unit is None: 
-            print ":: no %s unit found for '%s'" % (type, unit_name)
-            return False
+            return False, "Unit name **%s** not recognised." % unit_name
             
-        print ":: buying %d of %s %s" % (quantity, type, unit.name)
-        return unit.buy(self, reddit, type, user, quantity)
+        return unit.buy(self, history, type, user, quantity)
         
         
-    def post(self, reddit, type, user, unit_name):
+    def post(self, history, type, user, unit_name):
         """ "Post" a comment / link
         
         return true if unit.post9), false if unit not found
@@ -167,14 +172,12 @@ class Game:
         
         unit = self.get_unit(type, unit_name)
         if unit is None: 
-            print ":: no %s unit found for '%s'" % (type, unit_name)
-            return False
+            return False, "Unit name **%s** not recognised." % unit_name, False
             
-        print ":: posting %s %s" % (unit.name, type)
-        return unit.post(self, reddit, type, user)
+        return unit.post(self, history, type, user)
         
         
-    def parse_command(self, user, command, reddit):
+    def parse_command(self, user, command, history):
         """Parse a user comment (str)
         
         Accepts either full word or first letter of
@@ -189,38 +192,56 @@ class Game:
             
             buy-gold [comment|link] [unit.name|unit.short_name]
             bg [c|l] [unit.name|unit.short_name]
+            
+            
+        Specific quantity purchases will come at a later date.
         
         return true if successful
         """
     
-        successful = False
+        success = False
+        gold = False
         args = command.split(" ")
         
         if args[0] in ["buy","b"] and len(args) >= 3:
         
             if args[1] in ["comment","c"]:
-                self.buy_unit(reddit, "comment", user, " ".join(args[2:]))
-                successful = True
+                success, info = self.buy_unit(history, "comment", user, " ".join(args[2:]))
                 
             elif args[1] in ["link","l"]:
-                self.buy_unit(reddit, "link", user, " ".join(args[2:]))
-                successful = True
+                success, info = self.buy_unit(history, "link", user, " ".join(args[2:]))
                 
         elif args[0] in ["post","p"] and len(args) >= 3:
         
             if args[1] in ["comment","c"]:
-                self.post(reddit, "comment", user, " ".join(args[2:]))
-                successful = True
+                success, info, gold = self.post(history, "comment", user, " ".join(args[2:]))
                 
             elif args[1] in ["link","l"]:
-                self.post(reddit, "link", user, " ".join(args[2:]))
-                successful = True
-                
-        if not successful:
-            print("bad command")
-            print self.texter.pop_fail("bad command")
+                success, info, gold = self.post(history, "link", user, " ".join(args[2:]))
             
-        return successful
+        # try and give a detailed error explanation
+        else:
+        
+            if len(args) < 3:
+            
+                info = "Invalid arguments length."
+                
+            elif not args[0] in ["post","p","buy","b"]:
+            
+                info = "The only commands currently supported are \
+                        *buy* (or *b*) and *post* (or *p*).\n **%s**  \
+                        was not recognised." % args[0]
+                        
+            elif not args[1] in ["link","l","comment","c"]:
+            
+                info = "Your post type **%s** was not recognised. \
+                        The two types are: *comment* (or *c*) and \
+                        *link* (or *l*)." % args[1]
+                
+        if not success:
+            print("bad command by " + user.username)
+            
+        return success, info, gold
         
         
     def jason(self):
@@ -228,6 +249,7 @@ class Game:
         
         return json bateman
         """
+        
         bateman = {}
         for key in self.data:
             bateman[key] = getattr(self, key)

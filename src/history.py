@@ -18,3 +18,9 @@ class History:
     
     def __init__(self):
         pass
+        
+    def add_purchase(self, user, type, unit, quantity):
+        pass
+        
+    def add_post(self, user, type, unit, karma, gold):
+        pass

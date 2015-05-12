@@ -1,3 +1,3 @@
-|`{short_name}`{name}|{cost}|{cooldown}
-|:--|:-:|:-:|
-|{amount}|{pay}|{time}|
+| x | Short | Name | Cost | Pays | Cooldown | Time left |
+|--:|----|:---|---:|---:|:--:|:--:|
+|{amount}|`{short_name}`|{name}|{cost}|{pay}|{time}|{cooldown}|

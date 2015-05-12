@@ -8,17 +8,8 @@ http://karma.matho.me/
 """
 
 import time
-import game, unit, user, reddit
-
-def get_user(name, list):
-    """Get User object from list
-    
-    return user object or None
-    """
-    for user in list:
-        if user.username is name:
-            return user
-    return None
+import game, unit, user
+import reddit, stats, history
 
 def main():
     """Main function
@@ -26,13 +17,17 @@ def main():
     Instantiates game and reddit, and
     runs main loop.
     """
-    g = game.Game()     # game object
-    r = reddit.Reddit() # reddit object
-    us = []             # (current) users list
+    g = game.Game()       # game object
+    s = stats.Stats()     # stats object
+    h = history.History() # history object
+    r = reddit.Reddit()   # reddit object
     
-    exit = False
+    r.run_loop(g, s, h)
+    
+    '''
     while (not exit):
-        post = r.next_comment()
+    
+        comment = r.next_comment()
         
         if post is None:
             time.sleep(1)
@@ -53,7 +48,7 @@ def main():
         for u in us:
             u.save_data()
         
-        g.save()
+        g.save()'''
 
 if __name__ == "__main__":
     main()

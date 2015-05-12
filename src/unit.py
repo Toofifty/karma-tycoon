@@ -7,6 +7,8 @@ unit.py
 http://karma.matho.me/
 """
 
+from datetime import datetime, timedelta
+
 # multiplier to buy price after a purchase
 cost_mult = 1.3
 
@@ -64,6 +66,26 @@ class Unit:
         """
         return name == self.name or name == self.short_name
         
+    
+    def get_short_name(self):
+        return self.short_name
+    
+    
+    def get_name(self):
+        return self.name
+        
+        
+    def get_amount(self):
+        return self.amount
+        
+        
+    def get_time(self):
+        return self.convert_from_seconds(self.init_time * 1)
+        
+        
+    def get_suffix(self):
+        return self.type[0] + "k"
+        
         
     def get_profit(self):
         """Get the karma profit
@@ -72,6 +94,15 @@ class Unit:
         """
         
         return int(self.init_profit * self.amount)
+        
+        
+    def get_next_profit(self):
+        """Get the karma profit of next unit
+        
+        return int init_profit * (amount + 1)
+        """
+        
+        return int(self.init_profit * (self.amount + 1))
         
         
     def get_cost(self, quantity=1):
@@ -84,7 +115,8 @@ class Unit:
         
         return int(self.init_cost * cost_mult ** self.amount)
         
-    def buy(self, game, reddit, type, user, quantity=1):
+        
+    def buy(self, game, history, type, user, quantity=1):
         """Buy _quantity_ units
         
         Checks if enough of _type_ karma is available
@@ -96,29 +128,30 @@ class Unit:
         return true if successful
         """
         
-        if type == "comment" and \
-                game.get_comment_karma() >= self.get_cost(quantity):
-                
+        cost = self.get_cost(quantity)
+        
+        if type == "comment" and game.get_comment_karma() >= cost:
+        
             self.amount += quantity
-            user.add_purchase(self.name, quantity)
-            game.comment_karma -= self.get_cost(quantity)
-            print ":: bought comment, total %s %d" % (self.short_name, self.amount)
-            return True
+            user.add_purchase(self.id, quantity)
+            history.add_purchase(user, type, self, quantity)
+            game.comment_karma -= cost
             
-        elif type == "link" and \
-                game.get_link_karma() >= self.get_cost(quantity):
-                
+        elif type == "link" and game.get_link_karma() >= cost:      
+        
             self.amount += quantity
-            user.add_purchase(self.name, quantity)
-            game.link_karma -= self.get_cost(quantity)
-            print ":: bought link, total %s %d" % (self.short_name, self.amount)
-            return True
+            user.add_purchase(self.id, quantity)
+            history.add_purchase(user, type, self, quantity)
+            game.link_karma -= cost
             
-        print ":: buy failed, not enough funds"
-        return False
+        else:         
+            return False, "Buy failed, not enough %s karma." % type
+            
+        return True, "Bought %dx **%s** for **%d** %s karma." \
+                % (quantity, self.name, cost, type)
         
         
-    def post(self, game, reddit, type, user):
+    def post(self, game, history, type, user):
         """ "Post" this comment / link
         
         Adds get_profit to game karma (and use karma)
@@ -128,15 +161,25 @@ class Unit:
         
         if self.check_cooldown():
         
+            karma = self.get_profit()
+        
             if type == "comment":
-                game.add_comment_karma(user, self.get_profit())
-                return True
+                game.add_comment_karma(user, karma)
                 
             elif type == "link":
-                game.add_link_karma(user, self.get_profit())
-                return True
+                game.add_link_karma(user, karma)
                 
-        return False
+            
+            if game.random_gold(user, karma):
+                history.add_post(user, type, unit, karma, True)
+                return True, str(karma / 10000), True
+                
+            else:
+                history.add_post(user, type, unit, karma, False)
+                return True, "Gained **%d** %s karma." % (karma, type), False
+                
+        return False, "**%s** is still in cooldown. **%s** remaining." \
+                % (self.name, self.get_cooldown()), False
         
         
     def reset_cooldown(self):
@@ -163,3 +206,28 @@ class Unit:
         if cooldown != 0.
         """
         self.cooldown -= dt
+
+    
+    def get_cooldown(self):
+        return self.convert_from_seconds(self.cooldown)
+        
+        
+    def convert_from_seconds(self, secs):
+        sec = timedelta(seconds=secs)
+        d = datetime(1, 1, 1) + sec        
+        text = ""
+        
+        if d.day - 1 > 0:
+            text = text + str(d.day - 1) + " day" + ("s " if not d.day - 1 == 1 else " ")
+        if d.hour > 0:
+            text = text + str(d.hour) + " hour" + ("s " if not d.hour == 1 else " ")
+        if d.minute > 0:
+            text = text + str(d.minute) + " minute" + ("s " if not d.minute == 1 else " ")
+        if text == "":
+            text = text + str(d.second) + " second" + ("s" if not d.second == 1 else "")
+            
+        if text.endswith(" "):
+            text = text[:-1]
+            
+        return text
+        

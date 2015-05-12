@@ -3,6 +3,18 @@ import json, os
 USER_PATH = "../data/user/"
 EXT = ".kt"
 
+users = []
+
+def get_user(name):
+    """Get User object from users list
+    
+    return user object or None
+    """
+    for user in users:
+        if user.name is name:
+            return user
+    return None
+
 class User:
     """User class
     
@@ -17,23 +29,84 @@ class User:
         load from save.
         """
     
-        self.username = username
-        if not os.path.exists(USER_PATH + self.username + EXT):
+        self.name = name
+        if not os.path.exists(USER_PATH + self.name + EXT):
             self.create_file()
-        self.load_data(username)
+        self.load_data(name)
             
             
-    def get_flair(self):
-        """return str flair for use on Reddit"""
+    def get_flair(self, stats):
+        """Get flair to use on Reddit
         
-        return "L: %d C: %d" % (self.link_karma, self.comment_karma)
+        Examples:
+            (most karma, 12 gold)
+            1st 3000 LK | 4000 CK 12x
+            
+            (low karma, no gold)
+            20 LK | 30 CK
+            
+            (high karma, 1 gold)
+            19th 1000LK | 2140 CK 1x
+            
+        return str flair text
+        """
+        
+        flair = ""
+        pos = stats.get_position(self)
+        
+        if pos <= 20:
+            flair = str(pos) + ("st" if pos == 1 else ("nd" if pos == 2 else \
+                    ("rd" if pos == 3 else ""))) + " "
+                    
+        flair = flair + "%d LK | %d CK" % (self.link_karma, self.comment_karma)
+                    
+        if self.gold >= 1:
+            flair = "flair" + " " + str(self.gold) + "x"
+            
+        return flair
+        
+        
+    def get_flair_css(self, stats):
+        """Get flair css classes to use on Reddit
+        
+        Appends modifiers to css text
+        
+        More modifiers may be added later.
+        
+        return str css classes (sep by space)
+        """
+    
+        class = ""
+        
+        if self.name == "Toofifty":
+            class = class + "creator "
+            
+        if self.gold >= 1:
+            class = class + "gold "
+            
+        pos = stats.get_position(self)
+        
+        if pos == 1:
+            class = class + "first "
+            
+        elif pos == 2:
+            class = class + "second "
+            
+        elif pos == 3:
+            class = class + "third "
+            
+        elif pos <= 20:
+            class = class + "top20 "
+            
+        return class + "player"
+        
         
     def create_file(self):
         """Create a file with empty/0 values"""
         
-        with open(USER_PATH + self.username + EXT, 'w') as f:
+        with open(USER_PATH + self.name + EXT, 'w') as f:
             json.dump({"title":"", "gold":0, "link_karma":0, 
-                    "comment_karma":0, "purchases":{}}, f)
+                    "comment_karma":0, "commands":0, "purchases":{}}, f)
         
         
     def load_data(self, name):
@@ -47,6 +120,7 @@ class User:
             self.link_karma = self.data["link_karma"]
             self.comment_karma = self.data["comment_karma"]
             self.purchases = self.data["purchases"]
+            self.commands = self.data["commands"]
         except ValueError:
             self.create_file()
             self.load_data(name)
@@ -67,7 +141,7 @@ class User:
     def save_data(self):
         """Save data to user file"""
     
-        with open(USER_PATH + self.username + EXT, 'w') as f:
+        with open(USER_PATH + self.name + EXT, 'w') as f:
             json.dump(self.jason(), f)
     
     

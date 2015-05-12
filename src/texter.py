@@ -8,6 +8,7 @@ http://karma.matho.me/
 """
 
 import re, random
+
 TEXT_PATH = "../data/text/"
 
 class Texter:
@@ -40,31 +41,30 @@ class Texter:
         
         return text
         
-    def pop_unit_table(self, unit):
+        
+    def pop_unit_table(self, unit, table):
         """Populate a unit table
         
         return string Markdown unit table
         """
         
-        fn = "unit_table.txt"
-        if self.table_template is None:
-            with open(TEXT_PATH + fn, 'r') as f:
-                self.table_template = f.read()
-        
-        table = self.table_template
+        if unit.check_cooldown():
+            cooldown = "[Ready!](/unit_ready)"
+        else:
+            cooldown = str(unit.get_cooldown()) + " left"
         
         namevar = {
             "short_name": unit.get_short_name(),
             "name": unit.get_name(),
-            "cost": unit.get_cost(),
-            "cooldown": unit.get_cooldown(),
-            "amount": unit.get_amount(),
-            "pay": unit.get_profit(),
-            "time": unit.get_time()
+            "cost": "-" + str(unit.get_cost()) + " "  + unit.get_suffix(),
+            "cooldown": cooldown,
+            "amount": str(unit.get_amount()) + "x",
+            "pay": "+" + str(unit.get_next_profit()) + " " + unit.get_suffix(),
+            "time": "Cooldown: " + str(unit.get_time())
         }
         
         for k, v in namevar.iteritems():
-            table = text.replace("{" + k + "}", v)
+            table = table.replace("{" + k + "}", str(v))
             
         return table
         
@@ -75,13 +75,19 @@ class Texter:
         return string tables
         """
         
-        tables = ""
-        for unit in units:
-            tables = tables + "\n" + pop_unit_table(unit)
+        fn = "unit_table.txt"
+        with open(TEXT_PATH + fn, 'r') as f:
+            template = f.read().split("\n")
+                
+        tables = "\n".join(template[:-1])
+        for i in range(len(units)):
+            print i, units[i].name
+            tables = tables + "\n" + self.pop_unit_table(units[i], template[-1])
             
         return tables
         
-    def pop_op(self, game, hs, history):
+        
+    def pop_op(self, game, stats, history):
         """Populate the OP
         
         return string Markdown OP text
@@ -92,17 +98,17 @@ class Texter:
             text = f.read()
         
         namevar = {
-            "last_op_update": None,
+            "last_op_update": history.get_last_update_time(),
             "link_karma": game.get_link_karma(),
             "comment_karma": game.get_comment_karma(),
             "gold": game.get_gold(),
-            "top_link_all": hs.get_top_link_all(),
-            "top_comment_all": hs.get_top_comment_all(),
-            "top_g_all": hs.get_top_g_all(),
-            "top_link_24h": hs.get_top_link_24h(),
-            "top_comment_24h": hs.get_top_comment_24h(),
-            "top_g_24h": hs.get_top_g_24h(),
-            "last_hs_update": hs.get_last_hs_update(),
+            "top_link_all": stats.get_top_link_all(),
+            "top_comment_all": stats.get_top_comment_all(),
+            "top_g_all": stats.get_top_g_all(),
+            "top_link_24h": stats.get_top_link_24h(),
+            "top_comment_24h": stats.get_top_comment_24h(),
+            "top_g_24h": stats.get_top_g_24h(),
+            "last_hs_update": stats.get_last_hs_update(),
             "comment_units": pop_units_list(game.get_comment_units()),
             "link_units": pop_units_list(game.get_link_units())
         }
@@ -113,8 +119,9 @@ class Texter:
         return text        
         
         
-    def pop_hs(self):
+    def pop_hs(self, stats):
         pass
+        
         
     def pop_fail(self, reason):
         """Populates the command fail message
@@ -130,6 +137,7 @@ class Texter:
         
         return text
         
+        
     def pop_success(self, action):
         """Populates the command success message
         
@@ -144,6 +152,7 @@ class Texter:
         text = self.choose_alts(text)
         
         return text
+    
     
     def pop_gilded(self, chance):
         """Populates the command gilded message
