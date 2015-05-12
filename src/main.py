@@ -7,6 +7,7 @@ main.py
 http://karma.matho.me/
 """
 
+import time
 import game, unit, user, reddit
 
 def get_user(name, list):
@@ -32,6 +33,11 @@ def main():
     exit = False
     while (not exit):
         post = r.next_comment()
+        
+        if post is None:
+            time.sleep(1)
+            continue
+            
         # post has keys: "user", "comment"
         u = get_user(post["user"], us)
         if u is None:
@@ -41,6 +47,13 @@ def main():
         
         # process comment, run action
         g.parse_command(u, post["comment"], r)
+        
+        print ":: saving..."
+        
+        for u in us:
+            u.save_data()
+        
+        g.save()
 
 if __name__ == "__main__":
     main()

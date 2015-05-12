@@ -33,22 +33,26 @@ class User:
         
         with open(USER_PATH + self.username + EXT, 'w') as f:
             json.dump({"title":"", "gold":0, "link_karma":0, 
-                    "comment_karma":0, "purchases":{}})
+                    "comment_karma":0, "purchases":{}}, f)
         
         
     def load_data(self, name):
         """Load data in from json"""
-    
-        with open(USER_PATH + name + EXT, 'r') as f:
-            self.data = json.load(f)
-        self.title = self.data["title"]
-        self.gold = self.data["gold"]
-        self.link_karma = self.data["link_karma"]
-        self.comment_karma = self.data["comment_karma"]
-        self.purchases = self.data["purchases"]
+        
+        try:
+            with open(USER_PATH + name + EXT, 'r') as f:
+                self.data = json.load(f)
+            self.title = self.data["title"]
+            self.gold = self.data["gold"]
+            self.link_karma = self.data["link_karma"]
+            self.comment_karma = self.data["comment_karma"]
+            self.purchases = self.data["purchases"]
+        except ValueError:
+            self.create_file()
+            self.load_data(name)
         
         
-    def json(self):
+    def jason(self):
         """Convert volatile attributes to json
         
         return json statham
@@ -64,7 +68,7 @@ class User:
         """Save data to user file"""
     
         with open(USER_PATH + self.username + EXT, 'w') as f:
-            json.dump(json(), f)
+            json.dump(self.jason(), f)
     
     
     def add_purchase(self, id, quantity):

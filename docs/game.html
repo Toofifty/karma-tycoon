@@ -1,0 +1,129 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module game</title>
+<meta charset="utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>game</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:///E:/programming/misc/python/karmatycoon/src/game.py">e:\programming\misc\python\karmatycoon\src\game.py</a></font></td></tr></table>
+    <p><tt>Karma&nbsp;Tycoon&nbsp;Bot<br>
+<a href="#Game">Game</a>&nbsp;class<br>
+game.py<br>
+&nbsp;<br>
+<a href="http://karma.matho.me/">http://karma.matho.me/</a></tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="json.html">json</a><br>
+</td><td width="25%" valign=top><a href="unit.html">unit</a><br>
+</td><td width="25%" valign=top></td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="game.html#Game">Game</a>
+</font></dt></dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Game">class <strong>Game</strong></a></font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#Game">Game</a>&nbsp;object<br>
+&nbsp;<br>
+Handles&nbsp;karma&nbsp;points,&nbsp;command&nbsp;parsing,<br>
+and&nbsp;actions.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Game-__init__"><strong>__init__</strong></a>(self)</dt><dd><tt>Create&nbsp;game&nbsp;object&nbsp;from&nbsp;data&nbsp;in&nbsp;SAVE_PATH<br>
+&nbsp;<br>
+JSON&nbsp;file&nbsp;must&nbsp;have&nbsp;keys:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"gold"&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"link_karma"&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"comment_karma"&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"lifetime_link"&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"lifetime_comment"&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"runtime"&nbsp;int</tt></dd></dl>
+
+<dl><dt><a name="Game-add_comment_karma"><strong>add_comment_karma</strong></a>(self, user, karma)</dt><dd><tt>Add&nbsp;comment&nbsp;karma&nbsp;to&nbsp;tally&nbsp;and&nbsp;user's&nbsp;tally</tt></dd></dl>
+
+<dl><dt><a name="Game-add_gold"><strong>add_gold</strong></a>(self, user, karma)</dt><dd><tt>Randomly&nbsp;awards&nbsp;gold,&nbsp;dependent&nbsp;on&nbsp;karma&nbsp;gained</tt></dd></dl>
+
+<dl><dt><a name="Game-add_link_karma"><strong>add_link_karma</strong></a>(self, user, karma)</dt><dd><tt>Add&nbsp;link&nbsp;karma&nbsp;to&nbsp;tally&nbsp;and&nbsp;user's&nbsp;tally</tt></dd></dl>
+
+<dl><dt><a name="Game-buy_unit"><strong>buy_unit</strong></a>(self, reddit, type, user, unit_name, quantity<font color="#909090">=1</font>)</dt><dd><tt>Buy&nbsp;_quantity_&nbsp;units&nbsp;in&nbsp;_type_&nbsp;<br>
+&nbsp;<br>
+return&nbsp;true&nbsp;if&nbsp;unit.buy(),&nbsp;false&nbsp;if&nbsp;unit&nbsp;not&nbsp;found</tt></dd></dl>
+
+<dl><dt><a name="Game-get_comment_karma"><strong>get_comment_karma</strong></a>(self)</dt><dd><tt>return&nbsp;comment&nbsp;karma&nbsp;points</tt></dd></dl>
+
+<dl><dt><a name="Game-get_gold"><strong>get_gold</strong></a>(self)</dt><dd><tt>return&nbsp;gold&nbsp;points</tt></dd></dl>
+
+<dl><dt><a name="Game-get_lifetime_comment"><strong>get_lifetime_comment</strong></a>(self)</dt><dd><tt>return&nbsp;lifetime&nbsp;total&nbsp;comment&nbsp;karma&nbsp;points</tt></dd></dl>
+
+<dl><dt><a name="Game-get_lifetime_link"><strong>get_lifetime_link</strong></a>(self)</dt><dd><tt>return&nbsp;lifetime&nbsp;total&nbsp;link&nbsp;karma&nbsp;points</tt></dd></dl>
+
+<dl><dt><a name="Game-get_lifetime_total"><strong>get_lifetime_total</strong></a>(self)</dt><dd><tt>return&nbsp;lifetime&nbsp;total&nbsp;karma&nbsp;points</tt></dd></dl>
+
+<dl><dt><a name="Game-get_link_karma"><strong>get_link_karma</strong></a>(self)</dt><dd><tt>return&nbsp;link&nbsp;karma&nbsp;points</tt></dd></dl>
+
+<dl><dt><a name="Game-get_unit"><strong>get_unit</strong></a>(self, type, unit_name)</dt><dd><tt>Get&nbsp;unit&nbsp;from&nbsp;name&nbsp;and&nbsp;type<br>
+&nbsp;<br>
+return&nbsp;Unit&nbsp;object&nbsp;or&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="Game-json"><strong>json</strong></a>(self)</dt><dd><tt>Convert&nbsp;volatile&nbsp;attributes&nbsp;to&nbsp;json<br>
+&nbsp;<br>
+return&nbsp;json&nbsp;bateman</tt></dd></dl>
+
+<dl><dt><a name="Game-load_units"><strong>load_units</strong></a>(self)</dt><dd><tt>Load&nbsp;units&nbsp;into&nbsp;link_units&nbsp;and&nbsp;comment_units<br>
+&nbsp;<br>
+Creates&nbsp;units&nbsp;from&nbsp;data&nbsp;found&nbsp;in&nbsp;UNIT_PATH</tt></dd></dl>
+
+<dl><dt><a name="Game-parse_command"><strong>parse_command</strong></a>(self, user, command, reddit)</dt><dd><tt>Parse&nbsp;a&nbsp;user&nbsp;comment&nbsp;(str)<br>
+&nbsp;<br>
+Accepts&nbsp;either&nbsp;full&nbsp;word&nbsp;or&nbsp;first&nbsp;letter&nbsp;of<br>
+command.<br>
+&nbsp;<br>
+Commands:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;buy&nbsp;[comment|link]&nbsp;[unit.name|unit.short_name]&nbsp;(quantity)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;b&nbsp;[c|l]&nbsp;[unit.name|unit.short_name]&nbsp;(quantity)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;post&nbsp;[comment|link]&nbsp;[unit.name|unit.short_name]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;p&nbsp;[c|l]&nbsp;[unit.name|unit.short_name]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;buy-gold&nbsp;[comment|link]&nbsp;[unit.name|unit.short_name]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;bg&nbsp;[c|l]&nbsp;[unit.name|unit.short_name]<br>
+&nbsp;<br>
+return&nbsp;true&nbsp;if&nbsp;successful</tt></dd></dl>
+
+<dl><dt><a name="Game-post"><strong>post</strong></a>(self, reddit, type, user, unit_name)</dt><dd><tt>"Post"&nbsp;a&nbsp;comment&nbsp;/&nbsp;link<br>
+&nbsp;<br>
+return&nbsp;true&nbsp;if&nbsp;unit.post9),&nbsp;false&nbsp;if&nbsp;unit&nbsp;not&nbsp;found</tt></dd></dl>
+
+<dl><dt><a name="Game-save"><strong>save</strong></a>(self)</dt><dd><tt>Save&nbsp;current&nbsp;data&nbsp;to&nbsp;file<br>
+&nbsp;<br>
+return&nbsp;true&nbsp;if&nbsp;successful</tt></dd></dl>
+
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>EXT</strong> = '.kt'<br>
+<strong>SAVE_PATH</strong> = '../data/game'<br>
+<strong>UNIT_PATH</strong> = '../data/units'</td></tr></table>
+</body></html>

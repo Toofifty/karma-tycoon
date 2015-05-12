@@ -7,8 +7,8 @@ game.py
 http://karma.matho.me/
 """
 
-import json
-import unit
+import json, random
+import unit, texter
 
 UNIT_PATH = "../data/units"
 SAVE_PATH = "../data/game"
@@ -41,8 +41,9 @@ class Game:
         self.comment_karma = self.data["comment_karma"]
         self.lifetime_link = self.data["lifetime_link"]
         self.lifetime_comment = self.data["lifetime_comment"]
-        self.runtime = data["runtime"]
+        self.runtime = self.data["runtime"]
         self.load_units();
+        self.texter = texter.Texter()
         
         
     def load_units(self):
@@ -119,7 +120,7 @@ class Game:
         self.comment_karma += karma
         self.lifetime_comment += karma
         user.add_comment_karma(karma)
-        self.add_gold(karma)
+        self.add_gold(user, karma)
         print "ck: %d" % self.comment_karma
         
     def get_unit(self, type, unit_name):
@@ -180,8 +181,8 @@ class Game:
         command.
         
         Commands:
-            buy [comment|link] [unit.name|unit.short_name] (quantity)
-            b [c|l] [unit.name|unit.short_name] (quantity)
+            buy [comment|link] [unit.name|unit.short_name]
+            b [c|l] [unit.name|unit.short_name]
             
             post [comment|link] [unit.name|unit.short_name]
             p [c|l] [unit.name|unit.short_name]
@@ -194,14 +195,15 @@ class Game:
     
         successful = False
         args = command.split(" ")
-        if args[0] in ["buy","b"] and len(args) >= 4:
+        
+        if args[0] in ["buy","b"] and len(args) >= 3:
         
             if args[1] in ["comment","c"]:
-                self.buy_unit(reddit, "comment", user, " ".join(args[2:-1]))
+                self.buy_unit(reddit, "comment", user, " ".join(args[2:]))
                 successful = True
                 
             elif args[1] in ["link","l"]:
-                self.buy_unit(reddit, "link", user, " ".join(args[2:-1]))
+                self.buy_unit(reddit, "link", user, " ".join(args[2:]))
                 successful = True
                 
         elif args[0] in ["post","p"] and len(args) >= 3:
@@ -216,12 +218,12 @@ class Game:
                 
         if not successful:
             print("bad command")
-            # post reddit
+            print self.texter.pop_fail("bad command")
             
         return successful
         
         
-    def json(self):
+    def jason(self):
         """Convert volatile attributes to json
         
         return json bateman
@@ -239,4 +241,4 @@ class Game:
         """
         
         with open(SAVE_PATH + EXT, 'w') as f:
-            json.dump(self.json(), f)
+            json.dump(self.jason(), f)

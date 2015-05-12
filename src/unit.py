@@ -96,7 +96,7 @@ class Unit:
         return true if successful
         """
         
-        if type == "comment" and 
+        if type == "comment" and \
                 game.get_comment_karma() >= self.get_cost(quantity):
                 
             self.amount += quantity
@@ -105,7 +105,7 @@ class Unit:
             print ":: bought comment, total %s %d" % (self.short_name, self.amount)
             return True
             
-        elif type == "link" and 
+        elif type == "link" and \
                 game.get_link_karma() >= self.get_cost(quantity):
                 
             self.amount += quantity
@@ -114,7 +114,7 @@ class Unit:
             print ":: bought link, total %s %d" % (self.short_name, self.amount)
             return True
             
-        print ":: buy failed"
+        print ":: buy failed, not enough funds"
         return False
         
         
