@@ -7,7 +7,7 @@ game.py
 http://karma.matho.me/
 """
 
-import json, random
+import json, random, os, sys
 import unit, texter
 
 UNIT_PATH = "../data/units"
@@ -19,6 +19,16 @@ class Game:
     
     Handles karma points, command parsing,
     and actions.
+    
+    The game is stored as follows:
+    {
+        "gold": 0,
+        "link_karma": 0,
+        "comment_karma": 0,
+        "lifetime_link": 0,
+        "lifetime_comment": 0,
+        "runtime": 0
+    }
     """
 
     def __init__(self):
@@ -33,6 +43,16 @@ class Game:
             "runtime" int
         """
         
+        if not os.path.exists(SAVE_PATH + EXT):
+            print ":: no game save found, create new? (y/n)"
+            if raw_input().lower() in ["y","yes"]:
+                self.new_game()
+                print ":: game save created."
+            else:
+                print ":: please resolve the error manually."
+                print ":: exiting..."
+                sys.exit()
+
         with open(SAVE_PATH + EXT, 'r') as f:
             self.data = json.load(f)
             
@@ -44,6 +64,26 @@ class Game:
         self.runtime = self.data["runtime"]
         self.load_units();
         self.texter = texter.Texter()
+        
+        
+    def new_game(self):
+        """Creates a new game file
+        
+        RESETS CURRENT SAVE
+        
+        Only to be used if current save 
+        isn't found.
+        """
+        
+        with open(SAVE_PATH + EXT, 'w') as f:
+            json.dump({
+                "gold": 0,
+                "link_karma": 0,
+                "comment_karma": 0,
+                "lifetime_link": 0,
+                "lifetime_comment": 0,
+                "runtime": 0
+            }, f)
         
         
     def load_units(self):
@@ -60,7 +100,6 @@ class Game:
             
         i = 0
         for d in data["comment"]:
-            print i, d
             self.comment_units.insert(i, unit.from_dict(i, d, "comment"))
             i += 1
         #for id, attrs in data["link"]:

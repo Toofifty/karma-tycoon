@@ -37,25 +37,9 @@ Don't know how to play? Check out the [wiki](http://www.reddit.com/r/karmatycoon
 
 *****
 
-# Recent posts
+# Recent history
 
-## Links
-
-{post_links_recent}
-
-## Comments
-
-{post_comments_recent}
-
-# Recent purchases
-
-## Links
-
-{purchase_links_recent}
-
-## Comments
-
-{purchase_comments_recent}
+{recent_history}
 
 *****
 

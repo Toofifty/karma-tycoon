@@ -7,11 +7,12 @@ reddit.py
 http://karma.matho.me/
 """
 
-import praw, time
+import praw, time, os, sys
 import texter, user
 from pprint import pprint
 
 DATA_PATH = "../data/"
+SAVE_FILE = "comments.kt"
 
 class Reddit:
     """Reddit class
@@ -31,19 +32,34 @@ class Reddit:
         in and instantiates a new Texter object.
         """
         
-        self.load_completed()
-        user_agent = "karma-tycoon-controller:v0.5.0 by /u/Toofifty"
-        self.r = praw.Reddit(user_agent=user_agent)
-        
-        fn = "bot.kt"
-        with open(DATA_PATH + fn, 'r') as f:
-            creds = f.read().split("\n")
+        if not os.path.exists(DATA_PATH + SAVE_FILE):
+            print ":: no comment tracking file found, creating new"
+            self.create_save_file()
             
-        self.r.login(creds[0], creds[1])
-        self.sub = self.r.get_subreddit("karmatycoon")
-        self.texter = texter.Texter()
-        print ":: ready for Reddit input"
+        self.load_completed()
         
+        cred_fn = "bot.kt"
+        if not os.path.exists(DATA_PATH + cred_fn):
+            print ":: no bot credential file found in %s" \
+                    % DATA_PATH + cred_fn
+            print ":: exiting..."
+            sys.exit()
+        
+        with open(DATA_PATH + cred_fn, 'r') as f:
+            creds = f.read().split("\n")
+            print ":: loaded bot credentials"
+            
+        try:
+            user_agent = "karma-tycoon-controller:v0.5.0 by /u/Toofifty"
+            self.r = praw.Reddit(user_agent=user_agent)
+            self.r.login(creds[0], creds[1])
+            self.sub = self.r.get_subreddit("karmatycoon")
+            self.texter = texter.Texter()
+            print ":: ready for Reddit input"
+        except praw.requests.exceptions.ConnectionError:
+            print ":: failed to connect to Reddit"
+            print ":: exiting..."
+            sys.exit()
         
     def run_loop(self, game, stats, history):
         """Main Reddit input loop.
@@ -91,7 +107,8 @@ class Reddit:
                     self.update_user_flair(user, stats)
                     
             time.sleep(2)
-        
+    
+    
     def next_comment(self):
         # Unused.
         for comment in praw.helpers.comment_stream(reddit_session=self.r, 
@@ -116,20 +133,30 @@ class Reddit:
         self.completed.append(cID)
         self.save_completed()
         
+    
+    def create_save_file(self):
+        """Creates a new completed list file
+        
+        RESETS CURRENT SAVE
+        
+        Only to be used if current save 
+        isn't found.
+        """
+        
+        with open(DATA_PATH + SAVE_FILE, 'w') as f:
+            f.write("")
         
     def load_completed(self):
         """Load list of completed comments from file."""
     
-        fn = "comments.kt"
-        with open(DATA_PATH + fn, 'r') as f: 
+        with open(DATA_PATH + SAVE_FILE, 'r') as f: 
             self.completed = f.read().split("\n")
             
             
     def save_completed(self):
         """Save list of completed comments to file."""
         
-        fn = "comments.kt"
-        with open(DATA_PATH + fn, 'w') as f:
+        with open(DATA_PATH + SAVE_FILE, 'w') as f:
             f.write("\n".join(self.completed))
             
             

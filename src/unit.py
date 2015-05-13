@@ -16,13 +16,31 @@ def from_dict(id, dict, type):
     """Translate a dictionary into a Unit object
     with id
     
-    dictionary must have keys:
-        "name" str
-        "short_name" str
-        "init_cost" int
-        "init_profit" int
-        "init_time" int
-        "amount" int
+    Units are stored as follows (inside a list):
+    "comment": [
+        {
+            "amount": 0,
+            "id": "C01",
+            "init_cost": 30,
+            "init_profit": 7,
+            "init_time": 16,
+            "name": "Unpopular opinion",
+            "short_name": "unpop"
+        },
+        ...
+    ],
+    "link": [
+        {
+            "amount": 0,
+            "id": "L22",
+            "init_cost": 575000,
+            "init_profit": 7779,
+            "init_time": 345600,
+            "name": "Top of /r/all",
+            "short_name": "r-all"
+        },
+        ...
+    ]
         
     returns Unit object
     """

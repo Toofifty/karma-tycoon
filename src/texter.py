@@ -109,8 +109,9 @@ class Texter:
             "top_comment_24h": stats.get_top_comment_24h(),
             "top_g_24h": stats.get_top_g_24h(),
             "last_hs_update": stats.get_last_hs_update(),
+            "link_units": pop_units_list(game.get_link_units()),
             "comment_units": pop_units_list(game.get_comment_units()),
-            "link_units": pop_units_list(game.get_link_units())
+            "recent_history": history.get_recent()
         }
         
         for k, v in namevar.iteritems():

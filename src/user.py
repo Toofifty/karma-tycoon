@@ -22,13 +22,40 @@ def get_user(name):
     for user in users:
         if user.name is name:
             return user
-    return None
+    return User(name)
 
 class User:
     """User class
     
     Stores information about a user, tied to their
     Reddit username
+    
+    Users stored as follows (inside unique file):
+    {
+        "title": "",
+        "gold": 0,
+        "link_karma": 0,
+        "comment_karma": 0,
+        "purchases": {
+            "C01": 5,
+            "L03": 1
+        },
+        "commands": 10,
+    },
+    {
+        "title": "",
+        "gold": 5,
+        "link_karma": 1245,
+        "comment_karma": 204,
+        "purchases": {
+            "C01": 52,
+            "C09": 10,
+            "C17": 12,
+            "L04": 15,
+            "L11": 20
+        },
+        "commands": 120
+    }
     """
 
     def __init__(self, username):
@@ -84,27 +111,27 @@ class User:
         
         return str css class(es) (sep by space)
         """
-    
-        class = ""
+        
+        css = ""
             
         pos = stats.get_position(self)
         
         if pos == 1:
-            class = "first"
+            css = "first"
             
         elif pos == 2:
-            class = "second"
+            css = "second"
             
         elif pos == 3:
-            class = "third"
+            css = "third"
             
         elif pos <= 20:
-            class = "top20"
+            css = "top20"
             
         elif self.gold >= 1:
-            class = "gold"
+            css = "gold"
             
-        return class
+        return css
         
         
     def create_file(self):
