@@ -10,9 +10,9 @@ http://karma.matho.me/
 import json, random, os, sys
 import unit, texter
 
-UNIT_PATH = "../data/units"
-SAVE_PATH = "../data/game"
-EXT = ".kt"
+DATA_PATH = "../data/"
+UNIT_FILE = DATA_PATH + "units.kt"
+GAME_FILE = DATA_PATH + "game.kt"
 
 class Game:
     """Game object
@@ -30,7 +30,7 @@ class Game:
         "runtime": 0
     }
     """
-
+    
     def __init__(self):
         """Create game object from data in SAVE_PATH
         
@@ -43,7 +43,7 @@ class Game:
             "runtime" int
         """
         
-        if not os.path.exists(SAVE_PATH + EXT):
+        if not os.path.exists(GAME_FILE):
             print ":: no game save found, create new? (y/n)"
             if raw_input().lower() in ["y","yes"]:
                 self.new_game()
@@ -53,7 +53,7 @@ class Game:
                 print ":: exiting..."
                 sys.exit()
 
-        with open(SAVE_PATH + EXT, 'r') as f:
+        with open(GAME_FILE, 'r') as f:
             self.data = json.load(f)
             
         self.gold = self.data["gold"]
@@ -75,7 +75,7 @@ class Game:
         isn't found.
         """
         
-        with open(SAVE_PATH + EXT, 'w') as f:
+        with open(GAME_FILE, 'w') as f:
             json.dump({
                 "gold": 0,
                 "link_karma": 0,
@@ -95,7 +95,7 @@ class Game:
         self.link_units = []
         self.comment_units = []
         
-        with open(UNIT_PATH + EXT, 'r') as f:
+        with open(UNIT_FILE, 'r') as f:
             data = json.load(f)
             
         i = 0
@@ -110,6 +110,7 @@ class Game:
         """return gold points"""
         
         return self.gold
+        
         
     def get_link_karma(self):
         """return link karma points"""
@@ -301,5 +302,5 @@ class Game:
         return true if successful
         """
         
-        with open(SAVE_PATH + EXT, 'w') as f:
+        with open(GAME_FILE, 'w') as f:
             json.dump(self.jason(), f)

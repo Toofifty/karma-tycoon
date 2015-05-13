@@ -9,7 +9,8 @@ http://karma.matho.me/
 
 import json, os
 
-USER_PATH = "../data/user/"
+DATA_PATH = "../data/"
+USER_PATH = DATA_PATH + "user/"
 EXT = ".kt"
 
 users = []
@@ -67,8 +68,10 @@ class User:
     
         self.name = name
         if not os.path.exists(USER_PATH + self.name + EXT):
+            print ":: creating new user %s" % self.name
             self.create_file()
         self.load_data(name)
+        print ":: loaded user %s" % self.name
             
             
     def get_flair(self, stats):
@@ -112,8 +115,7 @@ class User:
         return str css class(es) (sep by space)
         """
         
-        css = ""
-            
+        css = ""            
         pos = stats.get_position(self)
         
         if pos == 1:

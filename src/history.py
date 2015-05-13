@@ -7,7 +7,8 @@ history.py
 http://karma.matho.me/
 """
 
-HIST_PATH = "../data/hist"
+DATA_PATH = "../data/"
+HIST_PATH = DATA_PATH + "hist"
 
 class History:
     """History class

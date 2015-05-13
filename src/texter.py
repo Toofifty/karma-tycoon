@@ -9,7 +9,8 @@ http://karma.matho.me/
 
 import re, random
 
-TEXT_PATH = "../data/text/"
+DATA_PATH = "../data/"
+TEXT_PATH = DATA_PATH + "text/"
 
 class Texter:
     """Texter text class

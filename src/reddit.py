@@ -12,7 +12,8 @@ import texter, user
 from pprint import pprint
 
 DATA_PATH = "../data/"
-SAVE_FILE = "comments.kt"
+SAVE_FILE = DATA_PATH + "comments.kt"
+CRED_FILE = DATA_PATH + "bot.kt"
 
 class Reddit:
     """Reddit class
@@ -32,20 +33,20 @@ class Reddit:
         in and instantiates a new Texter object.
         """
         
-        if not os.path.exists(DATA_PATH + SAVE_FILE):
+        if not os.path.exists(SAVE_FILE):
             print ":: no comment tracking file found, creating new"
             self.create_save_file()
             
         self.load_completed()
         
-        cred_fn = "bot.kt"
-        if not os.path.exists(DATA_PATH + cred_fn):
+        if not os.path.exists(CRED_FILE):
             print ":: no bot credential file found in %s" \
-                    % DATA_PATH + cred_fn
+                    % CRED_FILE
+            print ":: please resolve this error manually."
             print ":: exiting..."
             sys.exit()
         
-        with open(DATA_PATH + cred_fn, 'r') as f:
+        with open(CRED_FILE, 'r') as f:
             creds = f.read().split("\n")
             print ":: loaded bot credentials"
             
@@ -60,6 +61,7 @@ class Reddit:
             print ":: failed to connect to Reddit"
             print ":: exiting..."
             sys.exit()
+        
         
     def run_loop(self, game, stats, history):
         """Main Reddit input loop.
@@ -99,6 +101,7 @@ class Reddit:
                     else:
                         if not success:
                             self.reply_fail(comment, info)
+                            # comment.delete
                             continue
                         elif gold:
                             self.reply_gold(comment, info)
@@ -143,20 +146,20 @@ class Reddit:
         isn't found.
         """
         
-        with open(DATA_PATH + SAVE_FILE, 'w') as f:
+        with open(SAVE_FILE, 'w') as f:
             f.write("")
         
     def load_completed(self):
         """Load list of completed comments from file."""
     
-        with open(DATA_PATH + SAVE_FILE, 'r') as f: 
+        with open(SAVE_FILE, 'r') as f: 
             self.completed = f.read().split("\n")
             
             
     def save_completed(self):
         """Save list of completed comments to file."""
         
-        with open(DATA_PATH + SAVE_FILE, 'w') as f:
+        with open(SAVE_FILE, 'w') as f:
             f.write("\n".join(self.completed))
             
             
