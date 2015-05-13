@@ -7,9 +7,7 @@ main.py
 http://karma.matho.me/
 """
 
-import time
-import game, unit, user
-import reddit, stats, history
+import game, unit, user, reddit
 
 def main():
     """Main function
@@ -17,12 +15,11 @@ def main():
     Instantiates game and reddit, and
     runs main loop.
     """
+    
     g = game.Game()       # game object
-    s = stats.Stats()     # stats object
-    h = history.History() # history object
     r = reddit.Reddit()   # reddit object
     
-    r.run_loop(g, s, h)
+    r.run_loop(g)
     
 
 if __name__ == "__main__":

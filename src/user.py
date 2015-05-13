@@ -8,10 +8,7 @@ http://karma.matho.me/
 """
 
 import json, os
-
-DATA_PATH = "../data/"
-USER_PATH = DATA_PATH + "user/"
-EXT = ".kt"
+import db
 
 users = []
 
@@ -30,33 +27,6 @@ class User:
     
     Stores information about a user, tied to their
     Reddit username
-    
-    Users stored as follows (inside unique file):
-    {
-        "title": "",
-        "gold": 0,
-        "link_karma": 0,
-        "comment_karma": 0,
-        "purchases": {
-            "C01": 5,
-            "L03": 1
-        },
-        "commands": 10,
-    },
-    {
-        "title": "",
-        "gold": 5,
-        "link_karma": 1245,
-        "comment_karma": 204,
-        "purchases": {
-            "C01": 52,
-            "C09": 10,
-            "C17": 12,
-            "L04": 15,
-            "L11": 20
-        },
-        "commands": 120
-    }
     """
 
     def __init__(self, username):
@@ -66,11 +36,8 @@ class User:
         load from save.
         """
     
-        self.name = name
-        if not os.path.exists(USER_PATH + self.name + EXT):
-            print ":: creating new user %s" % self.name
-            self.create_file()
-        self.load_data(name)
+        self.name = username
+        self.load_data(username)
         print ":: loaded user %s" % self.name
             
             
@@ -116,7 +83,7 @@ class User:
         """
         
         css = ""            
-        pos = stats.get_position(self)
+        pos = db.get_position(self)
         
         if pos == 1:
             css = "first"
@@ -136,60 +103,32 @@ class User:
         return css
         
         
-    def create_file(self):
-        """Create a file with empty/0 values"""
+    def get_link_karma(self):
+        return self.link_karma
         
-        with open(USER_PATH + self.name + EXT, 'w') as f:
-            json.dump({"title":"", "gold":0, "link_karma":0, 
-                    "comment_karma":0, "commands":0, "purchases":{}}, f)
+        
+    def get_comment_karma(self):
+        return self.comment_karma
+        
+     
+    def get_total_karma(self):
+        return self.comment_karma + self.link_karma
         
         
     def load_data(self, name):
-        """Load data in from json"""
+        """Load data in from db"""
         
-        try:
-            with open(USER_PATH + name + EXT, 'r') as f:
-                self.data = json.load(f)
-            self.title = self.data["title"]
-            self.gold = self.data["gold"]
-            self.link_karma = self.data["link_karma"]
-            self.comment_karma = self.data["comment_karma"]
-            self.purchases = self.data["purchases"]
-            self.commands = self.data["commands"]
-        except ValueError:
-            self.create_file()
-            self.load_data(name)
-        
-        
-    def jason(self):
-        """Convert volatile attributes to json
-        
-        return json statham
-        """
-        
-        statham = {}
-        for key in self.data:
-            statham[key] = getattr(self, key)
-        return statham
-        
+        data = db.get_user(name)
+        self.title = data["title"]
+        self.gold = data["gold"]
+        self.link_karma = data["link_karma"]
+        self.comment_karma = data["comment_karma"]
+                
         
     def save_data(self):
-        """Save data to user file"""
+        """Save data to db"""
     
-        with open(USER_PATH + self.name + EXT, 'w') as f:
-            json.dump(self.jason(), f)
-    
-    
-    def add_purchase(self, id, quantity):
-        """Adds _quantity_ purchased to dict if key _id_
-        exists, else creates key _id_
-        
-        """
-    
-        try:
-            self.purchases[id] += quantity
-        except KeyError:
-            self.purchases[id] = quantity
+        db.update_user(self)
         
         
     def add_link_karma(self, karma):

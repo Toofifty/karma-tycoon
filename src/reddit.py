@@ -8,11 +8,10 @@ http://karma.matho.me/
 """
 
 import praw, time, os, sys
-import texter, user
+import texter, user, db
 from pprint import pprint
 
 DATA_PATH = "../data/"
-SAVE_FILE = DATA_PATH + "comments.kt"
 CRED_FILE = DATA_PATH + "bot.kt"
 
 class Reddit:
@@ -33,12 +32,6 @@ class Reddit:
         in and instantiates a new Texter object.
         """
         
-        if not os.path.exists(SAVE_FILE):
-            print ":: no comment tracking file found, creating new"
-            self.create_save_file()
-            
-        self.load_completed()
-        
         if not os.path.exists(CRED_FILE):
             print ":: no bot credential file found in %s" \
                     % CRED_FILE
@@ -57,13 +50,14 @@ class Reddit:
             self.sub = self.r.get_subreddit("karmatycoon")
             self.texter = texter.Texter()
             print ":: ready for Reddit input"
+            
         except praw.requests.exceptions.ConnectionError:
             print ":: failed to connect to Reddit"
             print ":: exiting..."
             sys.exit()
         
         
-    def run_loop(self, game, stats, history):
+    def run_loop(self, game):
         """Main Reddit input loop.
         
         Gets comments, ensures comment is new and not made
@@ -79,25 +73,28 @@ class Reddit:
         for comment in praw.helpers.comment_stream(reddit_session=self.r, 
                 subreddit=self.sub, limit=100):
                 
-            if not comment.id in self.completed:
+            if not db.has_comment_id(comment.id):
                 print ":: found new comment"
-                self.addID(comment.id)
                 if "karma-tycoon" == comment.link_author \
                         and "karma-tycoon" != comment.author.name:
                     
-                    pprint(vars(comment))
+                    #pprint(vars(comment))
                     comment_user = user.get_user(comment.author.name)
                     
                     success, info, gold = game.parse_command(comment_user, 
-                            comment.body, history)
+                            comment.body)
                     
-                    if user.commands == 0:                    
+                    if db.get_command_count(comment_user) == 0:                    
                         if success:
                             # maybe someone will get gold on their first try?
                             if gold:
                                 self.reply_gold(comment, info)
                             else:
                                 self.reply_success(comment, info)
+                        else:
+                            self.reply_fail(comment, info)
+                            # comment.delete
+                            continue
                     else:
                         if not success:
                             self.reply_fail(comment, info)
@@ -106,84 +103,35 @@ class Reddit:
                         elif gold:
                             self.reply_gold(comment, info)
                     
-                    self.update_op(game, stats, history)
-                    self.update_user_flair(user, stats)
+                    self.update_op(game)
+                    self.update_user_flair(user)
+                    
+                db.add_comment_id(comment.id)
                     
             time.sleep(2)
-    
-    
-    def next_comment(self):
-        # Unused.
-        for comment in praw.helpers.comment_stream(reddit_session=self.r, 
-                subreddit=self.sub, limit=100):
-                
-            print ":: found comment"
-            if not comment.id in self.completed:
-                self.completed.append(comment.id)
-                self.save_completed()
-                if "karma-tycoon" == comment.link_author and "karma-tycoon" != comment.author.name:
-                    pprint(vars(comment))
-                    comment.reply("hey!")
-                    return {"user": comment.author.name, 
-                            "comment": comment.body.lower()}
-        print ":: no comment. sleeping..."
-        return None
         
         
-    def addID(self, cID):
-        """Add id to completed list, and save."""
-    
-        self.completed.append(cID)
-        self.save_completed()
-        
-    
-    def create_save_file(self):
-        """Creates a new completed list file
-        
-        RESETS CURRENT SAVE
-        
-        Only to be used if current save 
-        isn't found.
-        """
-        
-        with open(SAVE_FILE, 'w') as f:
-            f.write("")
-        
-    def load_completed(self):
-        """Load list of completed comments from file."""
-    
-        with open(SAVE_FILE, 'r') as f: 
-            self.completed = f.read().split("\n")
-            
-            
-    def save_completed(self):
-        """Save list of completed comments to file."""
-        
-        with open(SAVE_FILE, 'w') as f:
-            f.write("\n".join(self.completed))
-            
-            
-    def update_op(self, game, stats, history):
+    def update_op(self, game):
         """Update the original post, populated with
-        values from _game_, _stats_, and _history_.
+        values from _game_, and the db.
         """
         
-        text = self.texter.pop_op(game, stats, history)
+        text = self.texter.pop_op(game)
         pass
         
         
-    def update_hs(self, stats):
+    def update_hs(self):
         """Update the highscores page on the wiki,
-        populated with values from _stats_.        
+        populated with values from the db.
         """
         
         pass
         
         
-    def update_user_flair(self, user, stats):
+    def update_user_flair(self, user):
         """Update a user's flair and flair css,
-        populate with _user.get_flair(stats)_ and
-        _user.get_flair_css(stats)_
+        populate with _user.get_flair()_ and
+        _user.get_flair_css()_
         """
         
         pass

@@ -8,47 +8,10 @@ http://karma.matho.me/
 """
 
 from datetime import datetime, timedelta
+import db
 
 # multiplier to buy price after a purchase
-cost_mult = 1.3
-
-def from_dict(id, dict, type):
-    """Translate a dictionary into a Unit object
-    with id
-    
-    Units are stored as follows (inside a list):
-    "comment": [
-        {
-            "amount": 0,
-            "id": "C01",
-            "init_cost": 30,
-            "init_profit": 7,
-            "init_time": 16,
-            "name": "Unpopular opinion",
-            "short_name": "unpop"
-        },
-        ...
-    ],
-    "link": [
-        {
-            "amount": 0,
-            "id": "L22",
-            "init_cost": 575000,
-            "init_profit": 7779,
-            "init_time": 345600,
-            "name": "Top of /r/all",
-            "short_name": "r-all"
-        },
-        ...
-    ]
-        
-    returns Unit object
-    """
-    
-    return Unit(type, id, dict["name"], dict["short_name"],
-            dict["init_cost"], dict["init_profit"], dict["init_time"],
-            dict["amount"])
-            
+cost_mult = 1.3            
             
 class Unit:
     """Link / comment unit
@@ -61,18 +24,30 @@ class Unit:
     cooldown = 0
     
     
-    def __init__(self, type, id, name, short_name, init_cost, 
-            init_profit, init_time, amount):
-        """Assign variables that were loaded from json"""
+    def __init__(self, data):
+        """Assign variables that were loaded from db"""
         
-        self.type = type
-        self.id = id
-        self.name = name
-        self.short_name = short_name
-        self.init_cost = init_cost
-        self.init_profit = init_profit
-        self.init_time = init_time
-        self.amount = amount
+        self.set_data(data)
+        print ":: loaded unit %d:%s" % (self.id, self.short)
+        
+        
+    def load_data(self, id):
+        """Load data in from db"""
+        
+        # may come in handy
+        # will probably remove later
+        self.set_data(db.get_unit(id))
+        
+    
+    def set_data(self, data):
+    
+        self.type = data["type"]
+        self.name = data["name"]
+        self.short = data["short"]
+        self.amount = data["amount"]
+        self.init_cost = data["init_cost"]
+        self.init_time = data["init_time"]
+        self.init_profit = data["init_profit"]
         
         
     def is_named(self, name):
@@ -82,11 +57,11 @@ class Unit:
             this name or short_name
         """
         
-        return name == self.name or name == self.short_name
+        return name == self.name or name == self.short
         
     
-    def get_short_name(self):
-        return self.short_name
+    def get_short(self):
+        return self.short
     
     
     def get_name(self):
@@ -103,6 +78,11 @@ class Unit:
         In future will be multiplied by a speed mult here.
         """
         return self.convert_from_seconds(self.init_time * 1)
+
+    
+    def get_cooldown(self):
+        """Get current cooldown time left"""
+        return self.convert_from_seconds(self.cooldown)
         
         
     def get_suffix(self):
@@ -110,6 +90,7 @@ class Unit:
         
         return str comment ? 'ck', link ? 'lk'
         """
+        
         return self.type[0] + "k"
         
         
@@ -142,7 +123,7 @@ class Unit:
         return int(self.init_cost * cost_mult ** self.amount)
         
         
-    def buy(self, game, history, type, user, quantity=1):
+    def buy(self, game, type, user, quantity=1):
         """Buy _quantity_ units
         
         Checks if enough of _type_ karma is available
@@ -158,26 +139,25 @@ class Unit:
         
         if type == "comment" and game.get_comment_karma() >= cost:
         
-            self.amount += quantity
-            user.add_purchase(self.id, quantity)
-            history.add_purchase(user, type, self, quantity)
             game.comment_karma -= cost
             
         elif type == "link" and game.get_link_karma() >= cost:      
         
-            self.amount += quantity
-            user.add_purchase(self.id, quantity)
-            history.add_purchase(user, type, self, quantity)
             game.link_karma -= cost
             
         else:         
             return False, "Buy failed, not enough %s karma." % type
-            
+        
+        # only reached if purchase is successful
+        self.amount += quantity
+        user.add_purchase(self.id, quantity)
+        db.add_command(user, "buy", type, self.id, quantity)
+        
         return True, "Bought %dx **%s** for **%d** %s karma." \
                 % (quantity, self.name, cost, type)
         
         
-    def post(self, game, history, type, user):
+    def post(self, game, type, user):
         """ "Post" this comment / link
         
         Adds get_profit to game karma (and use karma)
@@ -195,13 +175,13 @@ class Unit:
             elif type == "link":
                 game.add_link_karma(user, karma)
                 
+            db.add_command(user, "post", type, self.id, karma)
             
             if game.random_gold(user, karma):
-                history.add_post(user, type, unit, karma, True)
+                db.add_command(user, "post", "gold", self.id, 1)
                 return True, str(karma / 10000), True
                 
             else:
-                history.add_post(user, type, unit, karma, False)
                 return True, "Gained **%d** %s karma." % (karma, type), False
                 
         return False, "**%s** is still in cooldown. **%s** remaining." \
@@ -219,6 +199,7 @@ class Unit:
         
         return true if cooldown is 0
         """
+        
         if (self.cooldown <= 0):
             self.cooldown = 0
             return True
@@ -231,11 +212,8 @@ class Unit:
         Is called after every *actual* comment / command
         if cooldown != 0.
         """
+        
         self.cooldown -= dt
-
-    
-    def get_cooldown(self):
-        return self.convert_from_seconds(self.cooldown)
         
         
     def convert_from_seconds(self, secs):

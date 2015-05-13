@@ -7,103 +7,49 @@ game.py
 http://karma.matho.me/
 """
 
-import json, random, os, sys
-import unit, texter
-
-DATA_PATH = "../data/"
-UNIT_FILE = DATA_PATH + "units.kt"
-GAME_FILE = DATA_PATH + "game.kt"
+import json, random, os, sys, time
+import unit, texter, db
 
 class Game:
     """Game object
     
     Handles karma points, command parsing,
     and actions.
-    
-    The game is stored as follows:
-    {
-        "gold": 0,
-        "link_karma": 0,
-        "comment_karma": 0,
-        "lifetime_link": 0,
-        "lifetime_comment": 0,
-        "runtime": 0
-    }
     """
     
     def __init__(self):
-        """Create game object from data in SAVE_PATH
+        """Create game object from data in db"""
         
-        JSON file must have keys:
-            "gold" int
-            "link_karma" int
-            "comment_karma" int
-            "lifetime_link" int
-            "lifetime_comment" int
-            "runtime" int
-        """
-        
-        if not os.path.exists(GAME_FILE):
-            print ":: no game save found, create new? (y/n)"
-            if raw_input().lower() in ["y","yes"]:
-                self.new_game()
-                print ":: game save created."
-            else:
-                print ":: please resolve the error manually."
-                print ":: exiting..."
-                sys.exit()
-
-        with open(GAME_FILE, 'r') as f:
-            self.data = json.load(f)
-            
-        self.gold = self.data["gold"]
-        self.link_karma = self.data["link_karma"]
-        self.comment_karma = self.data["comment_karma"]
-        self.lifetime_link = self.data["lifetime_link"]
-        self.lifetime_comment = self.data["lifetime_comment"]
-        self.runtime = self.data["runtime"]
-        self.load_units();
+        self.load_data()
+        self.comment_units = self.load_units("comments")
+        self.link_units = self.load_units("link")
         self.texter = texter.Texter()
         
         
-    def new_game(self):
-        """Creates a new game file
+    def load_data(self):
         
-        RESETS CURRENT SAVE
-        
-        Only to be used if current save 
-        isn't found.
-        """
-        
-        with open(GAME_FILE, 'w') as f:
-            json.dump({
-                "gold": 0,
-                "link_karma": 0,
-                "comment_karma": 0,
-                "lifetime_link": 0,
-                "lifetime_comment": 0,
-                "runtime": 0
-            }, f)
+        data = db.get_game()
+        self.gold = data["gold"]
+        self.link_karma = data["link_karma"]
+        self.comment_karma = data["comment_karma"]
+        self.lifetime_lk = data["lifetime_lk"]
+        self.lifetime_ck = data["lifetime_ck"]
+        self.runtime = data["runtime"]
+        self.session_start = time.time()
         
         
-    def load_units(self):
+    def load_units(self, type):
         """Load units into link_units and comment_units
         
         Creates units from data found in UNIT_PATH
         """
         
-        self.link_units = []
-        self.comment_units = []
+        units = []
         
-        with open(UNIT_FILE, 'r') as f:
-            data = json.load(f)
-            
-        i = 0
-        for d in data["comment"]:
-            self.comment_units.insert(i, unit.from_dict(i, d, "comment"))
-            i += 1
-        #for id, attrs in data["link"]:
-        #    self.comment_units[int(id)] = unit.from_dict(id, attrs)
+        for unit_data in db.get_units(type):
+            units.append(Unit(unit_data))
+        
+        return units
         
         
     def get_gold(self):
@@ -191,7 +137,7 @@ class Game:
         return None
         
         
-    def buy_unit(self, history, type, user, unit_name, quantity=1):
+    def buy_unit(self, type, user, unit_name, quantity=1):
         """Buy _quantity_ units in _type_ 
         
         return true if unit.buy(), false if unit not found
@@ -201,10 +147,10 @@ class Game:
         if unit is None: 
             return False, "Unit name **%s** not recognised." % unit_name
             
-        return unit.buy(self, history, type, user, quantity)
+        return unit.buy(self, type, user, quantity)
         
         
-    def post(self, history, type, user, unit_name):
+    def post(self, type, user, unit_name):
         """ "Post" a comment / link
         
         return true if unit.post9), false if unit not found
@@ -214,10 +160,10 @@ class Game:
         if unit is None: 
             return False, "Unit name **%s** not recognised." % unit_name, False
             
-        return unit.post(self, history, type, user)
+        return unit.post(self, type, user)
         
         
-    def parse_command(self, user, command, history):
+    def parse_command(self, user, command):
         """Parse a user comment (str)
         
         Accepts either full word or first letter of
@@ -246,22 +192,24 @@ class Game:
         if args[0] in ["buy","b"] and len(args) >= 3:
         
             if args[1] in ["comment","c"]:
-                success, info = self.buy_unit(history, "comment", user, " ".join(args[2:]))
+                success, info = self.buy_unit("comment", user, " ".join(args[2:]))
                 
             elif args[1] in ["link","l"]:
-                success, info = self.buy_unit(history, "link", user, " ".join(args[2:]))
+                success, info = self.buy_unit("link", user, " ".join(args[2:]))
                 
         elif args[0] in ["post","p"] and len(args) >= 3:
         
             if args[1] in ["comment","c"]:
-                success, info, gold = self.post(history, "comment", user, " ".join(args[2:]))
+                success, info, gold = self.post("comment", user, " ".join(args[2:]))
                 
             elif args[1] in ["link","l"]:
-                success, info, gold = self.post(history, "link", user, " ".join(args[2:]))
+                success, info, gold = self.post("link", user, " ".join(args[2:]))
             
-        # try and give a detailed error explanation
-        else:
+        # try and give a detailed error explanation        
+        if not success:
         
+            print("bad command by " + user.name)
+            
             if len(args) < 3:
             
                 info = "Invalid arguments length."
@@ -277,23 +225,8 @@ class Game:
                 info = "Your post type **%s** was not recognised. \
                         The two types are: *comment* (or *c*) and \
                         *link* (or *l*)." % args[1]
-                
-        if not success:
-            print("bad command by " + user.username)
             
         return success, info, gold
-        
-        
-    def jason(self):
-        """Convert volatile attributes to json
-        
-        return json bateman
-        """
-        
-        bateman = {}
-        for key in self.data:
-            bateman[key] = getattr(self, key)
-        return bateman
         
         
     def save(self):
