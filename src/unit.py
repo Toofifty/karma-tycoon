@@ -12,12 +12,11 @@ from datetime import datetime, timedelta
 # multiplier to buy price after a purchase
 cost_mult = 1.3
 
-def from_dict(id, dict):
+def from_dict(id, dict, type):
     """Translate a dictionary into a Unit object
     with id
     
     dictionary must have keys:
-        "type" str
         "name" str
         "short_name" str
         "init_cost" int
@@ -28,7 +27,7 @@ def from_dict(id, dict):
     returns Unit object
     """
     
-    return Unit(dict["type"], id, dict["name"], dict["short_name"],
+    return Unit(type, id, dict["name"], dict["short_name"],
             dict["init_cost"], dict["init_profit"], dict["init_time"],
             dict["amount"])
             
@@ -64,6 +63,7 @@ class Unit:
         return true if _name_ matches 
             this name or short_name
         """
+        
         return name == self.name or name == self.short_name
         
     
@@ -80,10 +80,18 @@ class Unit:
         
         
     def get_time(self):
+        """Get total cooldown time
+        
+        In future will be multiplied by a speed mult here.
+        """
         return self.convert_from_seconds(self.init_time * 1)
         
         
     def get_suffix(self):
+        """Get type of karma as suffix
+        
+        return str comment ? 'ck', link ? 'lk'
+        """
         return self.type[0] + "k"
         
         
@@ -213,6 +221,12 @@ class Unit:
         
         
     def convert_from_seconds(self, secs):
+        """Convert the given seconds into X days, 
+        X hours, X minutes, X seconds string.
+        
+        Does not add 'X days' if X == 0, etc.
+        """
+        
         sec = timedelta(seconds=secs)
         d = datetime(1, 1, 1) + sec        
         text = ""

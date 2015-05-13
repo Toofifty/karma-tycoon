@@ -1,7 +1,7 @@
 #!/user/bin/env pthon
 """
 Karma Tycoon Bot
-Texter class
+Text generator class
 texter.py
 
 http://karma.matho.me/
@@ -120,6 +120,12 @@ class Texter:
         
         
     def pop_hs(self, stats):
+        """Populates the highscores page for
+        the wiki.
+    
+        return string Markdown highscores table text
+        """
+        
         pass
         
         
@@ -168,3 +174,12 @@ class Texter:
         text = self.choose_alts(text)
         
         return text
+
+    
+    def pop_stats_request(self, user, stats):
+        """Populates the reply to a stats request
+        with information about _user_.
+        
+        """
+        
+        pass

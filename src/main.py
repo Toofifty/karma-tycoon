@@ -24,31 +24,6 @@ def main():
     
     r.run_loop(g, s, h)
     
-    '''
-    while (not exit):
-    
-        comment = r.next_comment()
-        
-        if post is None:
-            time.sleep(1)
-            continue
-            
-        # post has keys: "user", "comment"
-        u = get_user(post["user"], us)
-        if u is None:
-            # create new user if not in list
-            u = user.User(post["user"])
-            us.append(u)
-        
-        # process comment, run action
-        g.parse_command(u, post["comment"], r)
-        
-        print ":: saving..."
-        
-        for u in us:
-            u.save_data()
-        
-        g.save()'''
 
 if __name__ == "__main__":
     main()

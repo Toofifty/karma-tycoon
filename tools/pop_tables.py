@@ -1,3 +1,12 @@
+#!/user/bin/env pthon
+"""
+Karma Tycoon Bot
+Test table populate class
+pop_tables.py
+
+http://karma.matho.me/
+"""
+
 import texter, game
 
 # needs to be placed into /src/ to work.

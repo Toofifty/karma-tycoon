@@ -1,7 +1,7 @@
 #!/user/bin/env pthon
 """
 Karma Tycoon Bot
-Stats class
+Statistics class
 stats.py
 
 http://karma.matho.me/
@@ -17,4 +17,16 @@ class Stats:
     """
 
     def __init__(self):
+        pass
+        
+        
+    def get_position(self, user):
+        pass
+        
+        
+    def load_stats(self):
+        pass
+        
+        
+    def save_stats(self):
         pass

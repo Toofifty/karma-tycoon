@@ -1,7 +1,7 @@
 #!/user/bin/env pthon
 """
 Karma Tycoon Bot
-Game class
+Game controller class
 game.py
 
 http://karma.matho.me/
@@ -61,7 +61,7 @@ class Game:
         i = 0
         for d in data["comment"]:
             print i, d
-            self.comment_units.insert(i, unit.from_dict(i, d))
+            self.comment_units.insert(i, unit.from_dict(i, d, "comment"))
             i += 1
         #for id, attrs in data["link"]:
         #    self.comment_units[int(id)] = unit.from_dict(id, attrs)

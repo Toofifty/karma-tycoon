@@ -1,3 +1,12 @@
+#!/user/bin/env pthon
+"""
+Karma Tycoon Bot
+User class
+user.py
+
+http://karma.matho.me/
+"""
+
 import json, os
 
 USER_PATH = "../data/user/"
@@ -56,7 +65,7 @@ class User:
         
         if pos <= 20:
             flair = str(pos) + ("st" if pos == 1 else ("nd" if pos == 2 else \
-                    ("rd" if pos == 3 else ""))) + " "
+                    ("rd" if pos == 3 else ""))) + " | "
                     
         flair = flair + "%d LK | %d CK" % (self.link_karma, self.comment_karma)
                     
@@ -67,38 +76,35 @@ class User:
         
         
     def get_flair_css(self, stats):
-        """Get flair css classes to use on Reddit
+        """Get flair css class(es) to use on Reddit
         
         Appends modifiers to css text
         
         More modifiers may be added later.
         
-        return str css classes (sep by space)
+        return str css class(es) (sep by space)
         """
     
         class = ""
-        
-        if self.name == "Toofifty":
-            class = class + "creator "
-            
-        if self.gold >= 1:
-            class = class + "gold "
             
         pos = stats.get_position(self)
         
         if pos == 1:
-            class = class + "first "
+            class = "first"
             
         elif pos == 2:
-            class = class + "second "
+            class = "second"
             
         elif pos == 3:
-            class = class + "third "
+            class = "third"
             
         elif pos <= 20:
-            class = class + "top20 "
+            class = "top20"
             
-        return class + "player"
+        elif self.gold >= 1:
+            class = "gold"
+            
+        return class
         
         
     def create_file(self):

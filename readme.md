@@ -37,24 +37,24 @@ There will be no cap on the amount of karma, and more units will probably be add
 |  4 | Thoughtful response                | `thoug` |     210 | 110 seconds |     28 |
 |  5 | Unsuccessful circlejerk            | `badcj` |     430 | 240 seconds |     46 |
 |  6 | Unsuccessful meme                  | `umeme` |     800 | 440 seconds |     72 |
-|  7 | First comment on niche thread      | `pop-n` |    1420 |  13 minutes |    108 |
+|  7 | Popular comment on niche thread    | `pop-n` |    1420 |  13 minutes |    108 |
 |  8 | Relevant video                     | `video` |    2400 |  25 minutes |    157 |
-|  9 | Reddit fame overlooked             | `rfovr` |    3950 |  40 minutes |    222 |
+|  9 | Reddit fame overlooked             | `invis` |    3950 |  40 minutes |    222 |
 | 10 | Pointing out overused meme         | `memeo` |    6200 |  60 minutes |    309 |
 | 11 | Weed reference                     | `weeds` |    9420 |  90 minutes |    420 |
 | 12 | Overused meme                      | `omeme` |   14500 | 140 minutes |    565 |
 | 13 | Popular opinion                    | `popop` |   21500 | 200 minutes |    748 |
 | 14 | Reddit fame spotted                | `rfame` |   31300 |     5 hours |    980 |
-| 15 | Top comment in a niche thread      | `top-n` |   45000 |     7 hours |   1270 |
+| 15 | Top comment on niche thread        | `top-n` |   45000 |     7 hours |   1270 |
 | 16 | Cool /r/AskReddit story, bro       | `ask-r` |   64000 |    10 hours |   1633 |
 | 17 | Funny typo                         | `typoo` |   90000 |    15 hours |   2081 |
 | 18 | Scientific response                | `scien` |  125000 |    20 hours |   2633 |
-| 19 | Default subreddit, first comment   | `first` |  172000 |    30 hours |   3308 |
+| 19 | First comment on default thread    | `first` |  172000 |    30 hours |   3308 |
 | 20 | Mentioned on /r/bestof             | `besto` |  240000 |    40 hours |   4130 |
-| 21 | Default subreddit, funny comment   | `funny` |  320000 |      2 days |   5126 |
-| 22 | Top post in a default              | `topdf` |  425000 |      3 days |   6331 |
-| 23 | President's AMA, first comment     | `p-ama` |  575000 |      4 days |   7779 |
-| 24 | Test comment please ignore         | `testp` |  760000 |      5 days |   9514 |
+| 21 | Popular comment on default thread  | `pop-d` |  320000 |      2 days |   5126 |
+| 22 | Top comment on default thread      | `top-d` |  425000 |      3 days |   6331 |
+| 23 | First comment on president's AMA   | `p-ama` |  575000 |      4 days |   7779 |
+| 24 | Test comment please ignore         | `testc` |  760000 |      5 days |   9514 |
 | 25 | Reddit famous AMA                  | `i-ama` | 1000000 |      7 days |  11586 |
 
 ### Links (re)posts
@@ -64,25 +64,25 @@ There will be no cap on the amount of karma, and more units will probably be add
 |  1 | Downvoted in /r/new                 | `r-new` |       2 |    1 second |      1 |
 |  2 | Okay post to niche subreddit        | `okayn` |      30 |  16 seconds |      7 |
 |  3 | Self promotion                      | `promo` |      90 |  45 seconds |     15 |
-|  4 | Quality link in niche subreddit     | `niche` |     210 | 110 seconds |     28 |
-|  5 | Quality link in default subreddit   | `qdflt` |     430 | 240 seconds |     46 |
+|  4 | Quality link in niche subreddit     | `qualn` |     210 | 110 seconds |     28 |
+|  5 | Quality link in default subreddit   | `quald` |     430 | 240 seconds |     46 |
 |  6 | News-worthy article                 | `newsa` |     800 | 440 seconds |     72 |
 |  7 | Mention in /r/shitposts             | `shitp` |    1420 |  13 minutes |    108 |
 |  8 | Shitty image in default subreddit   | `shiti` |    2400 |  25 minutes |    157 |
 |  9 | Passive aggressive image            | `passi` |    3950 |  40 minutes |    222 |
 | 10 | Kitten picture on /r/Aww            | `kitty` |    6200 |  60 minutes |    309 |
-| 11 | Repost to default subreddit         | `rpost` |    9420 |  90 minutes |    415 |
+| 11 | Repost to default subreddit         | `rpost` |    9420 |  90 minutes |    419 |
 | 12 | "Happened a year ago" TIFU          | `lyifu` |   14500 | 140 minutes |    565 |
 | 13 | Sob story                           | `sobby` |   21500 | 200 minutes |    748 |
 | 14 | Meta about beating a dead horse     | `hmeta` |   31300 |     5 hours |    980 |
 | 15 | Beating a dead horse                | `horse` |   45000 |     7 hours |   1270 |
 | 16 | Cool gif                            | `giffy` |   64000 |    10 hours |   1633 |
-| 17 | Self promotion (famous)             | `adver` |   90000 |    15 hours |   2081 |
+| 17 | Self promotion (famous)             | `advrt` |   90000 |    15 hours |   2081 |
 | 18 | vernetroyer                         | `verne` |  125000 |    20 hours |   2633 |
 | 19 | Picture of hot girl                 | `hotty` |  172000 |    30 hours |   3308 |
 | 20 | Niche post mentioned in /r/bestof   | `besto` |  240000 |    40 hours |   4130 |
 | 21 | Participate in site-wide circlejerk | `cjerk` |  320000 |      2 days |   5126 |
 | 22 | Shitpost to /r/AdviceAnimals        | `smeme` |  425000 |      3 days |   6331 |
-| 23 | Top of /r/all/                      | `r-all` |  575000 |      4 days |   7779 |
+| 23 | Top of /r/all                       | `r-all` |  575000 |      4 days |   7779 |
 | 24 | Become a meme                       | `me-me` |  760000 |      5 days |   9514 |
 | 25 | Test post please ignore             | `testp` | 1000000 |      7 days |  11586 |

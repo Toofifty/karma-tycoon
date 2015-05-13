@@ -1,3 +1,12 @@
+#!/user/bin/env pthon
+"""
+Karma Tycoon Bot
+Reddit integration class
+reddit.py
+
+http://karma.matho.me/
+"""
+
 import praw, time
 import texter, user
 from pprint import pprint
@@ -5,8 +14,22 @@ from pprint import pprint
 DATA_PATH = "../data/"
 
 class Reddit:
+    """Reddit class
+    
+    For integration with Reddit, is able to
+    edit posts, wiki, flair, flair css, get 
+    new comments and post replies.
+    
+    run_loop is the main loop of the program,
+    as everything relies on comment input.
+    """
+
     def __init__(self):
-        # connect to reddit
+        """Connects to Reddit
+        
+        Identifies with Reddit, loads credentials, logs
+        in and instantiates a new Texter object.
+        """
         
         self.load_completed()
         user_agent = "karma-tycoon-controller:v0.5.0 by /u/Toofifty"
@@ -23,6 +46,17 @@ class Reddit:
         
         
     def run_loop(self, game, stats, history):
+        """Main Reddit input loop.
+        
+        Gets comments, ensures comment is new and not made
+        by "karma-tycoon", parses the command and replies
+        with an appropriate response.
+        
+        Sleeps 2 seconds after each comment. If this is too
+        slow, nesting this loop in a while loop may be the 
+        way to go.
+        """
+    
         #for comment in self.sub.get_comments():
         for comment in praw.helpers.comment_stream(reddit_session=self.r, 
                 subreddit=self.sub, limit=100):
@@ -54,10 +88,12 @@ class Reddit:
                             self.reply_gold(comment, info)
                     
                     self.update_op(game, stats, history)
+                    self.update_user_flair(user, stats)
                     
             time.sleep(2)
         
     def next_comment(self):
+        # Unused.
         for comment in praw.helpers.comment_stream(reddit_session=self.r, 
                 subreddit=self.sub, limit=100):
                 
@@ -75,33 +111,59 @@ class Reddit:
         
         
     def addID(self, cID):
+        """Add id to completed list, and save."""
+    
         self.completed.append(cID)
         self.save_completed()
         
         
     def load_completed(self):
+        """Load list of completed comments from file."""
+    
         fn = "comments.kt"
         with open(DATA_PATH + fn, 'r') as f: 
             self.completed = f.read().split("\n")
             
             
     def save_completed(self):
+        """Save list of completed comments to file."""
+        
         fn = "comments.kt"
         with open(DATA_PATH + fn, 'w') as f:
             f.write("\n".join(self.completed))
             
             
     def update_op(self, game, stats, history):
+        """Update the original post, populated with
+        values from _game_, _stats_, and _history_.
+        """
+        
         text = self.texter.pop_op(game, stats, history)
         pass
         
         
     def update_hs(self, stats):
-        # TODO
+        """Update the highscores page on the wiki,
+        populated with values from _stats_.        
+        """
+        
+        pass
+        
+        
+    def update_user_flair(self, user, stats):
+        """Update a user's flair and flair css,
+        populate with _user.get_flair(stats)_ and
+        _user.get_flair_css(stats)_
+        """
+        
         pass
         
         
     def reply_fail(self, comment, reason):
+        """Reply a fail message to the comment given,
+        that is populated with _reason_.
+        """
+        
         try:
             comment.reply(self.texter.pop_fail(reason))
         except:
@@ -109,6 +171,10 @@ class Reddit:
         
         
     def reply_success(self, comment, action):
+        """Reply a success message to the comment given,
+        that is populated with _action_.
+        """
+        
         try:
             comment.reply(self.texter.pop_success(action))
         except:
@@ -116,6 +182,10 @@ class Reddit:
         
         
     def reply_gilded(self, comment, chance):
+        """Reply a gilded message to the comment given,
+        that is populated with _chance_.
+        """
+        
         try:
             comment.reply(self.texter.pop_gilded(chance))
         except:

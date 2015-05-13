@@ -1,7 +1,7 @@
 #!/user/bin/env pthon
 """
 Karma Tycoon Bot
-History class
+History tracker class
 history.py
 
 http://karma.matho.me/
@@ -19,8 +19,18 @@ class History:
     def __init__(self):
         pass
         
+        
     def add_purchase(self, user, type, unit, quantity):
         pass
         
+        
     def add_post(self, user, type, unit, karma, gold):
+        pass
+        
+        
+    def save_history(self):
+        pass
+        
+        
+    def load_history(self):
         pass
