@@ -19,9 +19,9 @@ def init():
     with con:    
         cur.execute("CREATE TABLE users(name TEXT, title TEXT, gold INT, \
                 link_karma INT, comment_karma INT)")
-        cur.execute("CREATE TABLE units(id INT, type TEXT, name TEXT, \
-                short TEXT, amount INT, init_cost INT, init_profit INT, \
-                init_time INT)")
+        cur.execute("CREATE TABLE units(id INTEGER PRIMARY KEY, type TEXT, \
+                name TEXT, short TEXT, amount INT, init_cost INT, \
+                init_profit INT, init_time INT)")
         cur.execute("CREATE TABLE commands(id INTEGER PRIMARY KEY, \
                 username TEXT, command TEXT, type TEXT, unit_id TEXT, \
                 value INT, time_sec INT)")
