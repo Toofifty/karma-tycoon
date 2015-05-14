@@ -9,7 +9,6 @@ http://karma.matho.me/
 
 import praw, time, os, sys
 import texter, user, db
-from pprint import pprint
 
 DATA_PATH = "../data/"
 CRED_FILE = DATA_PATH + "bot.kt"
@@ -74,15 +73,18 @@ class Reddit:
                 subreddit=self.sub, limit=100):
                 
             if not db.has_comment_id(comment.id):
-                print ":: found new comment"
                 if "karma-tycoon" == comment.link_author \
                         and "karma-tycoon" != comment.author.name:
+                    print ":: new comment %s by %s" % (comment.author.name,
+                            comment.author.id)
                     
-                    #pprint(vars(comment))
                     comment_user = user.get_user(comment.author.name)
                     
                     success, info, gold = game.parse_command(comment_user, 
                             comment.body)
+                            
+                    if info == "not command":
+                        continue
                     
                     if db.get_command_count(comment_user) == 0:                    
                         if success:
@@ -93,12 +95,10 @@ class Reddit:
                                 self.reply_success(comment, info)
                         else:
                             self.reply_fail(comment, info)
-                            # comment.delete
                             continue
                     else:
                         if not success:
                             self.reply_fail(comment, info)
-                            # comment.delete
                             continue
                         elif gold:
                             self.reply_gold(comment, info)
@@ -106,6 +106,7 @@ class Reddit:
                     self.update_op(game)
                     self.update_user_flair(user)
                     
+                print ":: adding %s to db" % comment.id
                 db.add_comment_id(comment.id)
                     
             time.sleep(2)

@@ -21,6 +21,7 @@ def get_user(name):
         if user.name is name:
             return user
     return User(name)
+    
 
 class User:
     """User class
@@ -38,6 +39,7 @@ class User:
     
         self.name = username
         self.load_data(username)
+        users.append(self)
         print ":: loaded user %s" % self.name
             
             

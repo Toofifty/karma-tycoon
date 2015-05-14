@@ -27,20 +27,13 @@ class Unit:
     def __init__(self, data):
         """Assign variables that were loaded from db"""
         
-        self.set_data(data)
+        self.load_data(data)
         print ":: loaded unit %d:%s" % (self.id, self.short)
         
-        
-    def load_data(self, id):
-        """Load data in from db"""
-        
-        # may come in handy
-        # will probably remove later
-        self.set_data(db.get_unit(id))
-        
     
-    def set_data(self, data):
-    
+    def load_data(self, data):
+        """Loads attributes from data dict"""
+        
         self.type = data["type"]
         self.name = data["name"]
         self.short = data["short"]

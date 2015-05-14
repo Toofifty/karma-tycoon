@@ -1,8 +1,8 @@
 #!/user/bin/env pthon
 """
 Karma Tycoon Bot
-SQL Database class
-database.py
+SQL Database interface functions
+db.py
 
 http://karma.matho.me/
 """
@@ -14,6 +14,8 @@ con.row_factory = sqlite3.Row
 cur = con.cursor()
 
 def init():
+    """Create tables"""
+    
     with con:    
         cur.execute("CREATE TABLE users(name TEXT, title TEXT, gold INT, \
                 link_karma INT, comment_karma INT)")
@@ -30,6 +32,8 @@ def init():
                 
     
 def new_game():
+    """Adds a new game record"""
+
     confirm = raw_input(":: are you sure you wish to reset the game? (y/n)")
     if confirm != "y":
         return
@@ -43,7 +47,10 @@ def new_game():
             id = len(games)
         cur.execute("INSERT INTO game VALUES(?, 0, 0, 0, 0, 0, 0)", (id,))
     
+    
 def get_game():
+    """Get current game info"""
+
     with con:
         cur.execute("SELECT * FROM game ORDER BY id DESC")
         game = cur.fetchone()
@@ -54,8 +61,11 @@ def get_game():
             return get_game()
             
         return game
-    
+        
+        
 def update_game(game):
+    """Saved the game state"""
+
     values = (game.gold, game.link_karma, game.comment_karma, 
             game.lifetime_lk, game.lifetime_ck, 
             game.runtime + time.time() - self.session_start)
@@ -66,11 +76,16 @@ def update_game(game):
     
                 
 def get_users():
+    """Gets all the users"""
+
     with con:
         cur.execute("SELECT * FROM users")
         return cur.fetchall()
+        
                 
 def get_user(username):
+    """Get the user data for username"""
+
     with con:
         cur.execute("SELECT * FROM users WHERE name=?", (username,))
         
@@ -139,6 +154,12 @@ def get_position(user):
 
         
 def get_top_karma_type(type, amount, hours):
+    """Gets _amount_ top users for karma _type_
+    in last _hours_ hours.
+    
+    If hours is None, gets total karma
+    """
+
     with con:
         if hours is None:
         
@@ -174,6 +195,7 @@ def get_top_karma_type(type, amount, hours):
                     else:
                         tally_comment[command["username"]] += command["value"]
                         
+            # sort and place into list
             top_in_hours = []
             for p in sorted(tally, key=tally.get, reverse=True):
                 top_in_hours.append({"name":p, 
@@ -197,6 +219,7 @@ def get_top_karma_type(type, amount, hours):
                 else:
                     tally[command["username"]] += command["value"]
                 
+            # sort and place into list
             top_in_hours = []
             for p in sorted(tally, key=tally.get, reverse=True):
                 top_in_hours.append({"name":p, type + "_karma":tally[p]})
@@ -222,3 +245,4 @@ def get_top_gold(amount, hours=None):
     
 if __name__ == "__main__":
     init()
+    

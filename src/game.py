@@ -20,15 +20,15 @@ class Game:
     def __init__(self):
         """Create game object from data in db"""
         
-        self.load_data()
+        self.load_data(db.get_game())
         self.comment_units = self.load_units("comments")
         self.link_units = self.load_units("link")
         self.texter = texter.Texter()
         
         
-    def load_data(self):
+    def load_data(self, data):
+        """Loads attributes from data dict"""
         
-        data = db.get_game()
         self.gold = data["gold"]
         self.link_karma = data["link_karma"]
         self.comment_karma = data["comment_karma"]
@@ -204,6 +204,10 @@ class Game:
                 
             elif args[1] in ["link","l"]:
                 success, info, gold = self.post("link", user, " ".join(args[2:]))
+            
+        else:
+            
+            return False, "not command", False
             
         # try and give a detailed error explanation        
         if not success:
