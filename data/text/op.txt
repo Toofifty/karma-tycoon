@@ -1,4 +1,4 @@
-# Welcome to the Karma Tycoon OP! 
+# Karma Tycoon
 This thread should only be used for KT commands, non-command comments will be removed.
 
 Don't know how to play? Check out the [wiki](http://www.reddit.com/r/karmatycoon/wiki/index).
@@ -19,17 +19,17 @@ Don't know how to play? Check out the [wiki](http://www.reddit.com/r/karmatycoon
 |*All time*|  {top_link_all} |  {top_comment_all} |{top_g_all}|
 |*Last 24h*|  {top_link_24h} |  {top_comment_24h} |{top_g_24h}|
 
-*Last update: {last_hs_update}*
-
 *****
 
-# Links
+## Links
 
 {link_units}
+*More will unlock as the link karma increases.*
 
-# Comments
+## Comments
 
 {comment_units}
+*More will unlock as the comment karma increases.*
 
 # Gold upgrades
 

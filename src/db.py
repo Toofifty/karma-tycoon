@@ -29,7 +29,6 @@ def init():
                 link_karma INT, comment_karma INT, lifetime_lk INT, \
                 lifetime_ck INT, runtime INT)")
         cur.execute("CREATE TABLE comments(id INT)")
-                
     
 def new_game():
     """Adds a new game record"""
@@ -68,11 +67,12 @@ def update_game(game):
 
     values = (game.gold, game.link_karma, game.comment_karma, 
             game.lifetime_lk, game.lifetime_ck, 
-            game.runtime + time.time() - self.session_start)
+            game.runtime + time.time() - game.session_start,
+            get_game()["id"])
 
     with con:
-        cur.execute("UPDATE game SET gold=? link_karma=? comment_karma=? \
-                lifetime_lk=? lifetime_ck=? runtime=?", values)
+        cur.execute("UPDATE game SET gold=?, link_karma=?, comment_karma=?, \
+                lifetime_lk=?, lifetime_ck=?, runtime=? WHERE id=?", values)
     
                 
 def get_users():
@@ -103,11 +103,10 @@ def get_user(username):
 def update_user(user):
     """Updates a user record."""
     
-    values = (user.name, user.title, user.gold, user.link_karma, 
-                user.comment_karma)
     with con:
-        cur.execute("UPDATE users SET title=? gold=? link_karma=? \
-                    comment_karma=? WHERE name=?", values[1:] + values[:1])
+        cur.execute("UPDATE users SET title=?, gold=?, link_karma=?, \
+                comment_karma=? WHERE name=?", (user.title, user.gold, 
+                user.link_karma, user.comment_karma, user.name))
         
         
 def get_units(type):
@@ -118,16 +117,23 @@ def get_units(type):
 
 def get_unit(id):
     with con:
-        cur.execute("SELECT 1 FROM units WHERE id=?", (id,))
-        return cur.fetchone()
+        cur.execute("SELECT * FROM units WHERE id=?", (id,))
+        return cur.fetchall()[0]
+        
+
+def update_unit(unit):
+    """Updates a unit (amount, cost, profit)"""
+    
+    with con:
+        cur.execute("UPDATE units SET amount=? WHERE id=?", 
+                (unit.amount, unit.id))
         
 
 def add_command(user, command, type, unitID, value):
     with con:
         cur.execute("INSERT INTO commands(username, command, type, unit_id, \
-                    value, time) VALUES(?, ?, ?, ?, ?, ?)", (user.name,
-                    command, type, unitID, value, 
-                    time.time()))
+                value, time_sec) VALUES(?, ?, ?, ?, ?, ?)", (user.name,
+                command, type, unitID, value, time.time()))
                     
                     
 def get_command_count(user):
@@ -150,10 +156,10 @@ def get_position(user):
     with con:
         cur.execute("SELECT * FROM users WHERE ? < link_karma + comment_karma", 
                 (user.get_total_karma(),))
-        print len(cur.fetchall()) + 1
+        return len(cur.fetchall()) + 1
 
         
-def get_top_karma_type(type, amount, hours):
+def get_top_karma_type(type, amount, hours=None):
     """Gets _amount_ top users for karma _type_
     in last _hours_ hours.
     
@@ -164,6 +170,7 @@ def get_top_karma_type(type, amount, hours):
         if hours is None:
         
             cur.execute("SELECT * FROM users ORDER BY ? DESC", (type,))
+                    
             return cur.fetchall()[:amount]
             
         elif "+" in type:
@@ -171,6 +178,11 @@ def get_top_karma_type(type, amount, hours):
             cur.execute("SELECT * FROM commands WHERE time_sec > ? \
                     AND command=? AND (type=? OR type=?)", 
                     (time.time() - hours * 3600, "post", "link", "comment"))
+            
+            commands = cur.fetchall()
+            
+            if len(commands) is 0:
+                return [{"name":"Nobody", type + "_karma":0}]
                     
             tally = {}
             tally_link = {}
@@ -206,14 +218,23 @@ def get_top_karma_type(type, amount, hours):
             
         else:
         
-            type = type.replace("_karma", "")
+            if not type == "gold":
+                type = type.replace("_karma", "")
         
             cur.execute("SELECT * FROM commands WHERE time_sec > ? \
                     AND command=? AND type=?", (time.time() - hours * 3600,
                     "post", type))
             
+            commands = cur.fetchall()
+            
+            if len(commands) is 0:
+                if type == "gold":
+                    return [{"name":"Nobody", type:0}]
+                else:
+                    return [{"name":"Nobody", type + "_karma":0}]
+            
             tally = {}
-            for command in cur.fetchall():
+            for command in commands:
                 if not command["username"] in tally:
                     tally[command["username"]] = command["value"]
                 else:
@@ -243,6 +264,13 @@ def get_top_gold(amount, hours=None):
     return get_top_karma_type("gold", amount, hours)
     
     
-if __name__ == "__main__":
-    init()
+def get_recent_commands(amount):
+    with con:
+        cur.execute("SELECT * FROM commands ORDER BY id DESC")
+        return cur.fetchall()[:amount]
+    
+
+# DANGERZONE    
+# if __name__ == "__main__":
+#     init()
     

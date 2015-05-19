@@ -13,6 +13,8 @@ import texter, user, db
 DATA_PATH = "../data/"
 CRED_FILE = DATA_PATH + "bot.kt"
 
+SM_ID = "35wp1j"
+
 class Reddit:
     """Reddit class
     
@@ -47,6 +49,7 @@ class Reddit:
             self.r = praw.Reddit(user_agent=user_agent)
             self.r.login(creds[0], creds[1])
             self.sub = self.r.get_subreddit("karmatycoon")
+            self.sm = self.r.get_submission(submission_id=SM_ID)
             self.texter = texter.Texter()
             print ":: ready for Reddit input"
             
@@ -75,41 +78,35 @@ class Reddit:
             if not db.has_comment_id(comment.id):
                 if "karma-tycoon" == comment.link_author \
                         and "karma-tycoon" != comment.author.name:
-                    print ":: new comment %s by %s" % (comment.author.name,
-                            comment.author.id)
                     
                     comment_user = user.get_user(comment.author.name)
+                    command_count = db.get_command_count(comment_user)
+                    
+                    print ":: new comment %s by %s (%d)" % (comment.id,
+                            comment.author.name, command_count)
                     
                     success, info, gold = game.parse_command(comment_user, 
                             comment.body)
                             
-                    if info == "not command":
-                        continue
-                    
-                    if db.get_command_count(comment_user) == 0:                    
+                    if not info == "not command":
                         if success:
                             # maybe someone will get gold on their first try?
                             if gold:
                                 self.reply_gold(comment, info)
+                                print ":: %s was gilded!" % comment.author.name
                             else:
                                 self.reply_success(comment, info)
                         else:
                             self.reply_fail(comment, info)
-                            continue
-                    else:
-                        if not success:
-                            self.reply_fail(comment, info)
-                            continue
-                        elif gold:
-                            self.reply_gold(comment, info)
                     
                     self.update_op(game)
-                    self.update_user_flair(user)
+                    self.update_user_flair(comment_user)
+                    db.update_user(comment_user)
+                    db.update_game(game)
                     
                 print ":: adding %s to db" % comment.id
                 db.add_comment_id(comment.id)
-                    
-            time.sleep(2)
+                time.sleep(2)
         
         
     def update_op(self, game):
@@ -118,7 +115,7 @@ class Reddit:
         """
         
         text = self.texter.pop_op(game)
-        pass
+        self.sm.edit(text)
         
         
     def update_hs(self):
@@ -135,18 +132,31 @@ class Reddit:
         _user.get_flair_css()_
         """
         
-        pass
+        if db.get_position(user) <= 20:
+            # May need to shift others
+            self.update_top_20_flairs()
+        else:
+            self.sub.set_flair(user.name, user.get_flair(), user.get_flair_css())
         
+        
+    def update_top_20_flairs(self):
+        flairs = []
+        for data in db.get_top_karma(20):
+            u = user.get_user(data["name"])
+            flairs.append({
+                    "user": u.name,
+                    "flair_text": u.get_flair(),
+                    "flair_css_class": u.get_flair_css()
+                })
+                
+        self.sub.set_flair_csv(flairs)
         
     def reply_fail(self, comment, reason):
         """Reply a fail message to the comment given,
         that is populated with _reason_.
         """
         
-        try:
-            comment.reply(self.texter.pop_fail(reason))
-        except:
-            pass
+        comment.reply(self.texter.pop_fail(reason))
         
         
     def reply_success(self, comment, action):
@@ -154,10 +164,7 @@ class Reddit:
         that is populated with _action_.
         """
         
-        try:
-            comment.reply(self.texter.pop_success(action))
-        except:
-            pass
+        comment.reply(self.texter.pop_success(action))
         
         
     def reply_gilded(self, comment, chance):
@@ -165,8 +172,5 @@ class Reddit:
         that is populated with _chance_.
         """
         
-        try:
-            comment.reply(self.texter.pop_gilded(chance))
-        except:
-            pass
+        comment.reply(self.texter.pop_gilded(chance))
             

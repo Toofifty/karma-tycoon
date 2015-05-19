@@ -1,13 +1,6 @@
-## {|Lookin' good!|Seem's like you've got the hang of it.|Aye aye, cap'n.|}
-
 Your command was successful.
 
 {action}
-
-You will only receive this reply once, to reduce spam. From now on, you will know if your command was successful if you *don't* receive a fail message.
-And, if you're quick, you'll be able to see the consequences of your actions in the OP when it updates.
-
-Enjoy the game!
 
 ***** 
 [^wiki](http://www.reddit.com/r/karmatycoon/wiki/index)

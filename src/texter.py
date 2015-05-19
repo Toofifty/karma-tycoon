@@ -7,7 +7,8 @@ texter.py
 http://karma.matho.me/
 """
 
-import re, random
+import re, random, time
+import db
 
 DATA_PATH = "../data/"
 TEXT_PATH = DATA_PATH + "text/"
@@ -55,7 +56,7 @@ class Texter:
             cooldown = str(unit.get_cooldown()) + " left"
         
         namevar = {
-            "short_name": unit.get_short_name(),
+            "short_name": unit.get_short(),
             "name": unit.get_name(),
             "cost": "-" + str(unit.get_cost()) + " "  + unit.get_suffix(),
             "cooldown": cooldown,
@@ -70,7 +71,7 @@ class Texter:
         return table
         
         
-    def pop_units_list(self, units):
+    def pop_units_list(self, units, game):
         """Creates a list of unit tables as a string
         
         return string tables
@@ -82,13 +83,55 @@ class Texter:
                 
         tables = "\n".join(template[:-1])
         for i in range(len(units)):
-            print i, units[i].name
-            tables = tables + "\n" + self.pop_unit_table(units[i], template[-1])
+            if units[i].get_cost() < game.get_lifetime_karma(units[i].type) * 2:
+                tables = tables + "\n" + self.pop_unit_table(units[i], template[-1])
             
         return tables
         
         
-    def pop_op(self, game, stats, history):
+    def pop_recents_action(self, data):    
+        if data["command"] == "post":
+            if data["type"] == "gold":
+                return "**Found gold!**"
+            else:
+                return "Posted *%s* for **%d** %s karma" % (
+                        db.get_unit(data["unit_id"])["name"], 
+                        data["value"], data["type"])
+        else:
+            return "Bought *%s* for **%d** %s karma" % (
+                    db.get_unit(data["unit_id"])["name"], data["value"], 
+                    data["type"])
+            
+        
+    def pop_recents_row(self, data, table):
+        namevar = {
+            "user": data["username"],
+            "action": self.pop_recents_action(data),
+            "time": time.strftime("%d-%m-%y %I:%M:%S%p", 
+                    time.gmtime(data["time_sec"]))
+        }
+        
+        for k, v in namevar.iteritems():
+            table = table.replace("{" + k + "}", str(v))
+            
+        return table
+        
+    def pop_recents_list(self):
+        
+        fn = "recents_table.txt"
+        with open(TEXT_PATH + fn, 'r') as f:
+            template = f.read().split("\n")
+                
+        recents = db.get_recent_commands(10)
+                
+        tables = "\n".join(template[:-1])
+        for i in range(10):
+            tables = tables + "\n" + self.pop_recents_row(recents[i], template[-1])
+        
+        return tables
+        
+        
+    def pop_op(self, game):
         """Populate the OP
         
         return string Markdown OP text
@@ -99,29 +142,29 @@ class Texter:
             text = f.read()
         
         namevar = {
-            "last_op_update": history.get_last_update_time(),
-            "link_karma": game.get_link_karma(),
-            "comment_karma": game.get_comment_karma(),
+            "last_op_update": time.strftime("%a %d-%m-%y, %I:%M:%S%p", time.gmtime()),
+            "link_karma": game.get_karma("link"),
+            "comment_karma": game.get_karma("comment"),
             "gold": game.get_gold(),
-            "top_link_all": stats.get_top_link_all(),
-            "top_comment_all": stats.get_top_comment_all(),
-            "top_g_all": stats.get_top_g_all(),
-            "top_link_24h": stats.get_top_link_24h(),
-            "top_comment_24h": stats.get_top_comment_24h(),
-            "top_g_24h": stats.get_top_g_24h(),
-            "last_hs_update": stats.get_last_hs_update(),
-            "link_units": pop_units_list(game.get_link_units()),
-            "comment_units": pop_units_list(game.get_comment_units()),
-            "recent_history": history.get_recent()
+            "top_link_all": db.get_top_karma_type("link", 1)[0]["name"],
+            "top_comment_all": db.get_top_karma_type("comment", 1)[0]["name"],
+            "top_g_all": db.get_top_karma_type("gold", 1)[0]["name"],
+            "top_link_24h": db.get_top_karma_type("link", 1, 24)[0]["name"],
+            "top_comment_24h": db.get_top_karma_type("comment", 1, 24)[0]["name"],
+            "top_g_24h": db.get_top_karma_type("gold", 1, 24)[0]["name"],
+            # "last_hs_update": stats.get_last_hs_update(),
+            "link_units": self.pop_units_list(game.link_units, game),
+            "comment_units": self.pop_units_list(game.comment_units, game),
+            "recent_history": self.pop_recents_list()
         }
         
         for k, v in namevar.iteritems():
-            text = text.replace("{" + k + "}", v)
+            text = text.replace("{" + k + "}", str(v))
             
         return text        
         
         
-    def pop_hs(self, stats):
+    def pop_hs(self):
         """Populates the highscores page for
         the wiki.
     

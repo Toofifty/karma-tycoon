@@ -8,7 +8,7 @@ http://karma.matho.me/
 """
 
 import json, random, os, sys, time
-import unit, texter, db
+import unit, texter, db, unit
 
 class Game:
     """Game object
@@ -21,7 +21,7 @@ class Game:
         """Create game object from data in db"""
         
         self.load_data(db.get_game())
-        self.comment_units = self.load_units("comments")
+        self.comment_units = self.load_units("comment")
         self.link_units = self.load_units("link")
         self.texter = texter.Texter()
         
@@ -47,7 +47,7 @@ class Game:
         units = []
         
         for unit_data in db.get_units(type):
-            units.append(Unit(unit_data))
+            units.append(unit.Unit(unit_data))
         
         return units
         
@@ -58,34 +58,27 @@ class Game:
         return self.gold
         
         
-    def get_link_karma(self):
-        """return link karma points"""
-        
-        return self.link_karma
-        
-        
-    def get_comment_karma(self):
-        """return comment karma points"""
-        
-        return self.comment_karma
-        
-        
-    def get_lifetime_link(self):
-        """return lifetime total link karma points"""
-        
-        return self.lifetime_link
-        
-        
-    def get_lifetime_comment(self):
-        """return lifetime total comment karma points"""
-        
-        return self.lifetime_comment
-        
+    def get_karma(self, type):
+        if type.lower() == "comment":
+            return self.comment_karma
+            
+        elif type.lower() == "link":
+            return self.link_karma
+            
+            
+    def get_lifetime_karma(self, type):
+        if type.lower() == "comment":
+            return self.lifetime_ck
+            
+        elif type.lower() == "link":
+            return self.lifetime_lk
+            
         
     def get_lifetime_total(self):
         """return lifetime total karma points"""
         
-        return self.get_lifetime_link() + self.get_lifetime_karma()
+        return self.get_lifetime_karma("comment") \
+                + self.get_lifetime_karma("link")
         
         
     def random_gold(self, user, karma):
@@ -102,7 +95,7 @@ class Game:
         """Add link karma to tally and user's tally"""
         
         self.link_karma += karma
-        self.lifetime_link += karma
+        self.lifetime_lk += karma
         user.add_link_karma(karma)
         return True
         
@@ -111,7 +104,7 @@ class Game:
         """Add comment karma to tally and user's tally"""
         
         self.comment_karma += karma
-        self.lifetime_comment += karma
+        self.lifetime_ck += karma
         user.add_comment_karma(karma)
         return True
         

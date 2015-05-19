@@ -18,7 +18,7 @@ def get_user(name):
     return user object or None
     """
     for user in users:
-        if user.name is name:
+        if user.name == name:
             return user
     return User(name)
     
@@ -43,7 +43,7 @@ class User:
         print ":: loaded user %s" % self.name
             
             
-    def get_flair(self, stats):
+    def get_flair(self):
         """Get flair to use on Reddit
         
         Examples:
@@ -60,7 +60,7 @@ class User:
         """
         
         flair = ""
-        pos = stats.get_position(self)
+        pos = db.get_position(self)
         
         if pos <= 20:
             flair = str(pos) + ("st" if pos == 1 else ("nd" if pos == 2 else \
@@ -69,12 +69,12 @@ class User:
         flair = flair + "%d LK | %d CK" % (self.link_karma, self.comment_karma)
                     
         if self.gold >= 1:
-            flair = "flair" + " " + str(self.gold) + "x"
+            flair = "x" + str(self.gold) + " " + flair
             
         return flair
         
         
-    def get_flair_css(self, stats):
+    def get_flair_css(self):
         """Get flair css class(es) to use on Reddit
         
         Appends modifiers to css text

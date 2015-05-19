@@ -1,5 +1,3 @@
-## {|Uh oh!|Sorry, cap'n.|lern to post lol|You've made a huge mistake|}
-
 Your action wasn't successful. I'm sorry.
 
 {reason}

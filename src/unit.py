@@ -34,6 +34,7 @@ class Unit:
     def load_data(self, data):
         """Loads attributes from data dict"""
         
+        self.id = data["id"]
         self.type = data["type"]
         self.name = data["name"]
         self.short = data["short"]
@@ -50,7 +51,8 @@ class Unit:
             this name or short_name
         """
         
-        return name == self.name or name == self.short
+        return name.lower() == self.name.lower() \
+                or name.lower() == self.short.lower()
         
     
     def get_short(self):
@@ -130,21 +132,23 @@ class Unit:
         
         cost = self.get_cost(quantity)
         
-        if type == "comment" and game.get_comment_karma() >= cost:
+        if type == "comment" and game.get_karma("comment") >= cost:
         
             game.comment_karma -= cost
             
-        elif type == "link" and game.get_link_karma() >= cost:      
+        elif type == "link" and game.get_karma("link") >= cost:      
         
             game.link_karma -= cost
             
         else:         
-            return False, "Buy failed, not enough %s karma." % type
+            return False, "Buy failed, not enough %s karma. \
+                    Cost: %d, %s karma: %d" % (type, cost, type,
+                    game.get_karma(type))
         
         # only reached if purchase is successful
         self.amount += quantity
-        user.add_purchase(self.id, quantity)
         db.add_command(user, "buy", type, self.id, quantity)
+        db.update_unit(self)
         
         return True, "Bought %dx **%s** for **%d** %s karma." \
                 % (quantity, self.name, cost, type)

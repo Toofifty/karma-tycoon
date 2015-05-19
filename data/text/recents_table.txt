@@ -1,0 +1,3 @@
+| Player | Action | Time |
+|:--:|--------|:--:|
+|{user}|{action}|{time}|
