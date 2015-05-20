@@ -7,20 +7,17 @@ main.py
 http://karma.matho.me/
 """
 
-import game, unit, user, reddit
+import game, reddit
 
 def main():
     """Main function
-    
+
     Instantiates game and reddit, and
     runs main loop.
     """
-    
-    g = game.Game()       # game object
-    r = reddit.Reddit()   # reddit object
-    
-    r.run_loop(g)
-    
+
+    reddit.Reddit().run_loop(game.Game())
+
 
 if __name__ == "__main__":
     main()
